@@ -10,14 +10,14 @@ with open('LICENSE') as f:
     license = f.read()
 
 setup(
-    name='sample',
+    name='densratio',
     version='0.0.1',
-    description='Sample package for Python-Guide.org',
+    description='A Python Package for Density Ratio Estimation',
     long_description=readme,
-    author='Kenneth Reitz',
-    author_email='me@kennethreitz.com',
-    url='https://github.com/kennethreitz/samplemod',
+    author='Koji Makiyama',
+    author_email='hoxo.smile@gmail.com',
+    install_requires=['scipy'],
+    url='https://github.com/hoxo-m/densratio_py',
     license=license,
     packages=find_packages(exclude=('tests', 'docs'))
 )
-
