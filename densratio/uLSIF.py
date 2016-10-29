@@ -52,7 +52,7 @@ def uLSIF(x, y, sigma_range = None, lambda_range = None,
                     kernel_num = kernel_num, sigma = sigma,
                     centers = centers)
 
-    def compute_density_ratio():
+    def compute_density_ratio(x):
         phi_x = compute_kernel_Gaussian(x, centers, sigma)
         density_ratio = phi_x.dot(matrix(alpha))
         return density_ratio

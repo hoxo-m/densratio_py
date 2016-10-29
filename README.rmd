@@ -41,6 +41,16 @@ from densratio import densratio
 
 x = norm.rvs(size = 200, loc = 0, scale = 1./8, random_state = 71)
 y = norm.rvs(size = 200, loc = 0, scale = 1./2, random_state = 71)
-result = densratio(x, y)
+result = densratio(x, y, verbose = False)
 print(result)
 ```
+
+
+## 2. How to Install
+
+You can install the package from GitHub.
+
+```:sh
+$ pip install git+https://github.com/hoxo-m/densratio_py.git
+```
+

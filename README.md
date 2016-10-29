@@ -27,27 +27,29 @@ print(result)
 
 
 ```
-#> ################## Start uLSIF ##################
-#> Searching optimal sigma and lambda...
-#>   sigma = 0.316, lambda = 0.001, score = -0.541
-#>   sigma = 0.316, lambda = 0.003, score = -1.192
-#> Found optimal sigma = 0.316, lambda = 0.003.
-#> Optimizing alpha...
-#> End.
-#> ################## Finished uLSIF ###############
 #> Method: uLSIF
 #> 
 #> Kernel Information:
 #>   Kernel type: Gaussian RBF
 #>   Number of kernels: 100
 #>   Bandwidth(sigma): 0.316227766017
-#>   Centers: array([-0.09598839, -0.11855759, -0.05781936, -0.18525961, 0.04098506,..
+#>   Centers: array([-0.00658011, 0.06967075, 0.19379611, -0.13928245, -0.11855759,..
 #> 
 #> Kernel Weights(alpha):
-#>   array([ 0.2880579 , 0.49622356, 0.48327207, 0. , 0.13081916,..
+#>   array([ 0.19442928, 0.76883806, 0. , 0.09978718, 0.43633254,..
 #> 
 #> Regularization Parameter(lambda): 0.00316227766017
 #> 
 #> The Function to Estimate Density Ratio:
 #>   compute_density_ratio(x)
 ```
+
+
+## 2. How to Install
+
+You can install the package from GitHub.
+
+```:sh
+$ pip install git+https://github.com/hoxo-m/densratio_py.git
+```
+
