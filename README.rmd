@@ -1,0 +1,46 @@
+---
+title: "A Python Package for Density Ratio Estimation"
+author: Koji MAKIYAMA (@hoxo_m)
+output: 
+  html_document:
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message = FALSE
+)
+```
+
+## 1. Overview
+
+**Density ratio estimation** is described as follows: for given two data samples `x` and `y` from unknown distributions `p(x)` and `q(y)` respectively, estimate `w(x) = p(x) / q(x)`, where `x` and `y` are d-dimensional real numbers.
+
+The estimated density ratio function `w(x)` can be used in many applications such as the inlier-based outlier detection [1] and covariate shift adaptation [2].
+Other useful applications about density ratio estimation were summarized by Sugiyama et al. (2012) [3].
+
+The package **densratio** provides a function `densratio()` that returns a result has the function to estimate density ratio `compute_density_ratio()`.
+
+For example, 
+a
+```{r engine="python", eval=FALSE}
+from scipy.stats import norm
+from densratio import densratio
+
+x = norm.rvs(size = 200, loc = 0, scale = 1./8, random_state = 71)
+y = norm.rvs(size = 200, loc = 0, scale = 1./2, random_state = 71)
+result = densratio(x, y)
+print(result)
+```
+
+```{r engine="python", echo=FALSE}
+from scipy.stats import norm
+from densratio import densratio
+
+x = norm.rvs(size = 200, loc = 0, scale = 1./8, random_state = 71)
+y = norm.rvs(size = 200, loc = 0, scale = 1./2, random_state = 71)
+result = densratio(x, y)
+print(result)
+```

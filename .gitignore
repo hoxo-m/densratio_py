@@ -4,3 +4,6 @@ docs
 .DS_Store
 *.egg-info
 
+.Rproj.user
+
+README.html
