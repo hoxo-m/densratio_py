@@ -77,7 +77,7 @@ def search_sigma_and_lambda(x, y, centers, sigma_range, lambda_range, verbose):
     sigma_new = 0
     lambda_new = 0
 
-    for sigma in sigma_range[5:6]:
+    for sigma in sigma_range:
         phi_x = compute_kernel_Gaussian(x, centers, sigma)
         phi_y = compute_kernel_Gaussian(y, centers, sigma)
         H = phi_y.T.dot(phi_y)
