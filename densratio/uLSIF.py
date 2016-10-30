@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from numpy import linspace, inf, exp, array, cross, matrix, diag, multiply, ones
+from numpy import linspace, inf, exp, array, cross, matrix, diag, multiply, ones, divide
 from numpy.random import randint
-from numpy.linalg import norm, inv
+from numpy.linalg import norm, inv, solve
 from density_ratio import DensityRatio, KernelInfo
 
 def uLSIF(x, y, sigma_range = None, lambda_range = None,
@@ -43,8 +43,9 @@ def uLSIF(x, y, sigma_range = None, lambda_range = None,
     phi_y = compute_kernel_Gaussian(y, centers, sigma)
     H = phi_y.T.dot(phi_y) / ny
     h = phi_x.mean(axis = 0).T
-    alpha = inv(H + diag(array(lambda_).repeat(kernel_num))).dot(h).A1
-    alpha[alpha < 0] = 0
+    # alpha = inv(H + diag(array(lambda_).repeat(kernel_num))).dot(h).A1
+    alpha = solve(H + diag(array(lambda_).repeat(kernel_num)), h).A1
+    # alpha[alpha < 0] = 0
     if verbose:
         print("End.")
 
@@ -86,18 +87,22 @@ def search_sigma_and_lambda(x, y, centers, sigma_range, lambda_range, verbose):
         phi_y = phi_y[:n_min].T
         for lambda_ in lambda_range:
             B = H + diag(array(lambda_ * (ny - 1) / ny).repeat(kernel_num))
-            B_inv = inv(B)
-            B_inv_X = B_inv.dot(phi_y)
+            # B_inv = inv(B)
+            # B_inv_X = B_inv.dot(phi_y)
+            B_inv_X = solve(B, phi_y)
             X_B_inv_X = multiply(phi_y, B_inv_X)
             denom = (ny * ones(n_min) - ones(kernel_num).dot(X_B_inv_X)).A1
-            B0 = B_inv.dot(h.dot(matrix(ones(n_min)))) + B_inv_X.dot(diag(h.T.dot(B_inv_X).A1 / denom))
-            B1 = B_inv.dot(phi_x) + B_inv_X.dot(diag(ones(kernel_num).dot(multiply(phi_x, B_inv_X)).A1))
+            # B0 = B_inv.dot(h.dot(matrix(ones(n_min)))) + B_inv_X.dot(diag(h.T.dot(B_inv_X).A1 / denom))
+            B0 = solve(B, h.dot(matrix(ones(n_min)))) + B_inv_X.dot(diag(h.T.dot(B_inv_X).A1 / denom))
+            # B1 = B_inv.dot(phi_x) + B_inv_X.dot(diag(ones(kernel_num).dot(multiply(phi_x, B_inv_X)).A1))
+            B1 = solve(B, phi_x) + B_inv_X.dot(diag(ones(kernel_num).dot(multiply(phi_x, B_inv_X)).A1))
             B2 = (ny - 1) * (nx * B0 - B1) / (ny * (nx - 1))
             B2[B2 < 0] = 0
-            r_y = matrix(ones(kernel_num)).dot(multiply(phi_y, B2))
-            r_x = matrix(ones(kernel_num)).dot(multiply(phi_x, B2))
+            r_y = matrix(ones(kernel_num)).dot(multiply(phi_y, B2)).T
+            r_x = matrix(ones(kernel_num)).dot(multiply(phi_x, B2)).T
 
-            score = (r_y.dot(r_y.T).A1 / 2 - matrix(ones(n_min)).dot(r_x.T).A1) / n_min
+            # score = (r_y.T.dot(r_y).A1 / 2 - matrix(ones(n_min)).dot(r_x).A1) / n_min
+            score = (r_y.T.dot(r_y).A1 / 2 - r_x.sum(axis=0)) / n_min
             if score < score_new:
                 if verbose:
                     print("  sigma = %.3f, lambda = %.3f, score = %.3f" % (sigma, lambda_, score))

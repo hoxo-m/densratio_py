@@ -29,8 +29,8 @@ a
 from scipy.stats import norm
 from densratio import densratio
 
-x = norm.rvs(size = 200, loc = 0, scale = 1./8, random_state = 71)
-y = norm.rvs(size = 200, loc = 0, scale = 1./2, random_state = 71)
+x = norm.rvs(size = 200, loc = 1, scale = 1./8, random_state = 71)
+y = norm.rvs(size = 200, loc = 1, scale = 1./2, random_state = 71)
 result = densratio(x, y)
 print(result)
 ```

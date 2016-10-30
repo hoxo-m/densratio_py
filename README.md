@@ -19,8 +19,8 @@ a
 from scipy.stats import norm
 from densratio import densratio
 
-x = norm.rvs(size = 200, loc = 0, scale = 1./8, random_state = 71)
-y = norm.rvs(size = 200, loc = 0, scale = 1./2, random_state = 71)
+x = norm.rvs(size = 200, loc = 1, scale = 1./8, random_state = 71)
+y = norm.rvs(size = 200, loc = 1, scale = 1./2, random_state = 71)
 result = densratio(x, y)
 print(result)
 ```
@@ -32,13 +32,13 @@ print(result)
 #> Kernel Information:
 #>   Kernel type: Gaussian RBF
 #>   Number of kernels: 100
-#>   Bandwidth(sigma): 0.316227766017
-#>   Centers: array([-0.00658011, 0.06967075, 0.19379611, -0.13928245, -0.11855759,..
+#>   Bandwidth(sigma): 0.0316227766017
+#>   Centers: array([ 0.07676093, 0.15944279, -0.06443216, 0.07535333, 0.12622057,..
 #> 
 #> Kernel Weights(alpha):
-#>   array([ 0.19442928, 0.76883806, 0. , 0.09978718, 0.43633254,..
+#>   array([ 7.36162341e+00, 4.85725106e+00, 0.00000000e+00,..
 #> 
-#> Regularization Parameter(lambda): 0.00316227766017
+#> Regularization Parameter(lambda): 0.001
 #> 
 #> The Function to Estimate Density Ratio:
 #>   compute_density_ratio(x)
