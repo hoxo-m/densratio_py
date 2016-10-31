@@ -12,6 +12,11 @@ knitr::opts_chunk$set(
   comment = "#>",
   message = FALSE
 )
+if (Sys.getenv("engine.path") != "") {
+  knitr::opts_chunk$set(
+    engine.path = Sys.getenv("engine.path")
+  )
+}
 ```
 
 ## 1. Overview
@@ -157,3 +162,74 @@ print(result)
 - **Kernel weights(alpha)** are alpha parameters in the linear model. It is optimaized by the algorithms. You can find the whole values in `result.alpha`. 
 - **The Funtion to Estimate Density Ratio** is named `compute_density_ratio()`.
 
+## 4. Multi Dimensional Data Samples
+
+In the above, the input data samples `x` and `y` were one dimensional.
+`densratio()` allows to input multidimensional data samples as `matrix`.
+
+For example,
+
+```{r engine="python", eval=FALSE}
+from numpy import random, meshgrid, linspace, array, matrix, mgridad
+from scipy.stats import multivariate_normal
+from densratio import densratio
+
+random.seed(3)
+x = multivariate_normal.rvs(size = 300, mean = [1, 1], cov = [[1./8, 0], [0, 1./8]])
+y = multivariate_normal.rvs(size = 300, mean = [1, 1], cov = [[1./2, 0], [0, 1./2]])
+result = densratio(x, y)
+print(result)
+```
+
+```{r engine="python", cache=TRUE, echo=FALSE}
+from numpy import random, meshgrid, linspace, array, matrix
+from scipy.stats import multivariate_normal
+from densratio import densratio
+
+random.seed(3)
+x = multivariate_normal.rvs(size = 300, mean = [1, 1], cov = [[1./8, 0], [0, 1./8]])
+y = multivariate_normal.rvs(size = 300, mean = [1, 1], cov = [[1./2, 0], [0, 1./2]])
+result = densratio(x, y, verbose = False)
+print(result)
+```
+
+Also in this case, we can compare the true density ratio with the estimated density ratio.
+
+```{r engine="python", eval=FALSE}
+from matplotlib import pyplot as plt
+
+def true_density_ratio(x):
+    return multivariate_normal.pdf(x, [1., 1.], [[1./8, 0], [0, 1./8]]) / \
+           multivariate_normal.pdf(x, [1., 1.], [[1./2, 0], [0, 1./2]])
+
+def estimated_density_ratio(x):
+    return result.compute_density_ratio(x)
+
+range_ = linspace(0, 2, 300)
+grid = dstack(meshgrid(range_, range_))
+
+plt.subplot(1, 2, 1)
+plt.contourf(range_, range_, true_density_ratio(grid))
+plt.title("True Density Ratio")
+plt.subplot(1, 2, 2)
+plt.contourf(range_, range_, map(estimated_density_ratio, grid))
+plt.title("Estimated Density Ratio")
+plt.show()
+```
+
+![](README_files/compare-2d-1.png)
+
+The dimensions of `x` and `y` must be same.
+
+## 5. References
+
+[1] Hido, S., Tsuboi, Y., Kashima, H., Sugiyama, M., & Kanamori, T. 
+**Statistical outlier detection using direct density ratio estimation.**
+Knowledge and Information Systems 2011. 
+
+[2] Sugiyama, M., Nakajima, S., Kashima, H., von Bünau, P. & Kawanabe, M. 
+**Direct importance estimation with model selection and its application to covariate shift adaptation.** NIPS 2007.
+
+[3] Sugiyama, M., Suzuki, T. & Kanamori, T. 
+**Density Ratio Estimation in Machine Learning.**
+Cambridge University Press 2012.
