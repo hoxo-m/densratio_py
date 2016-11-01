@@ -16,9 +16,9 @@ For example,
 
 
 ```python
+from numpy import random
 from scipy.stats import norm
 from densratio import densratio
-from numpy import random
 
 random.seed(1)
 x = norm.rvs(size = 200, loc = 1, scale = 1./8)
@@ -104,6 +104,8 @@ In this case, `result.compute_density_ratio()` can compute estimated density rat
 
 
 ```r
+from matplotlib import pyplot as plt
+
 plt.plot(y, result.compute_density_ratio(y), "o")
 plt.xlabel("x")
 plt.ylabel("Density Ratio")
@@ -173,13 +175,13 @@ For example,
 
 
 ```python
-from numpy import random, meshgrid, linspace, array, matrix, mgridad
+from numpy import random
 from scipy.stats import multivariate_normal
 from densratio import densratio
 
 random.seed(3)
-x = multivariate_normal.rvs(size = 300, mean = [1, 1], cov = [[1./8, 0], [0, 1./8]])
-y = multivariate_normal.rvs(size = 300, mean = [1, 1], cov = [[1./2, 0], [0, 1./2]])
+x = multivariate_normal.rvs(size = 3000, mean = [1, 1], cov = [[1./8, 0], [0, 1./8]])
+y = multivariate_normal.rvs(size = 3000, mean = [1, 1], cov = [[1./2, 0], [0, 1./2]])
 result = densratio(x, y)
 print(result)
 ```
@@ -192,12 +194,12 @@ print(result)
 #>   Kernel type: Gaussian RBF
 #>   Number of kernels: 100
 #>   Bandwidth(sigma): 0.316227766017
-#>   Centers: array([[ 0.98982274, 0.47888252],..
+#>   Centers: array([[ 1.06481062, 1.09768368],..
 #> 
 #> Kernel Weights(alpha):
-#>   array([ 0.15977556, 0.19826562, 0.23464401, 0.15282181, 0.13344328,..
+#>   array([ 0.19009526, 0.18680918, 0.20764146, 0.19914001, 0.21313236,..
 #> 
-#> Regularization Parameter(lambda): 0.1
+#> Regularization Parameter(lambda): 0.0316227766017
 #> 
 #> The Function to Estimate Density Ratio:
 #>   compute_density_ratio(x)
@@ -208,6 +210,7 @@ Also in this case, we can compare the true density ratio with the estimated dens
 
 ```python
 from matplotlib import pyplot as plt
+from numpy import linspace, dstack, meshgrid
 
 def true_density_ratio(x):
     return multivariate_normal.pdf(x, [1., 1.], [[1./8, 0], [0, 1./8]]) / \
@@ -216,14 +219,17 @@ def true_density_ratio(x):
 def estimated_density_ratio(x):
     return result.compute_density_ratio(x)
 
-range_ = linspace(0, 2, 300)
+range_ = linspace(0, 2, 200)
 grid = dstack(meshgrid(range_, range_))
+levels = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4.5]
 
 plt.subplot(1, 2, 1)
-plt.contourf(range_, range_, true_density_ratio(grid))
+plt.contourf(range_, range_, true_density_ratio(grid), levels)
+plt.colorbar()
 plt.title("True Density Ratio")
 plt.subplot(1, 2, 2)
-plt.contourf(range_, range_, map(estimated_density_ratio, grid))
+plt.contourf(range_, range_, map(estimated_density_ratio, grid), levels)
+plt.colorbar()
 plt.title("Estimated Density Ratio")
 plt.show()
 ```

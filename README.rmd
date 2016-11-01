@@ -31,9 +31,9 @@ The package **densratio** provides a function `densratio()` that returns a resul
 For example, 
 
 ```{r engine="python", eval=FALSE}
+from numpy import random
 from scipy.stats import norm
 from densratio import densratio
-from numpy import random
 
 random.seed(1)
 x = norm.rvs(size = 200, loc = 1, scale = 1./8)
@@ -43,9 +43,9 @@ print(result)
 ```
 
 ```{r engine="python", echo=FALSE, cache=TRUE}
+from numpy import random
 from scipy.stats import norm
 from densratio import densratio
-from numpy import random
 
 random.seed(1)
 x = norm.rvs(size = 200, loc = 1, scale = 1./8)
@@ -109,6 +109,8 @@ result = densratio(x, y)
 In this case, `result.compute_density_ratio()` can compute estimated density ratio.  
 
 ```{r eval=FALSE}
+from matplotlib import pyplot as plt
+
 plt.plot(y, result.compute_density_ratio(y), "o")
 plt.xlabel("x")
 plt.ylabel("Density Ratio")
@@ -143,9 +145,9 @@ As the result, you can obtain `compute_density_ratio()`.
 `densratio()` outputs the result like as follows:
 
 ```{r engine="python", echo=FALSE, cache=TRUE}
+from numpy import random
 from scipy.stats import norm
 from densratio import densratio
-from numpy import random
 
 random.seed(1)
 x = norm.rvs(size = 200, loc = 1, scale = 1./8)
@@ -170,25 +172,25 @@ In the above, the input data samples `x` and `y` were one dimensional.
 For example,
 
 ```{r engine="python", eval=FALSE}
-from numpy import random, meshgrid, linspace, array, matrix, mgridad
+from numpy import random
 from scipy.stats import multivariate_normal
 from densratio import densratio
 
 random.seed(3)
-x = multivariate_normal.rvs(size = 300, mean = [1, 1], cov = [[1./8, 0], [0, 1./8]])
-y = multivariate_normal.rvs(size = 300, mean = [1, 1], cov = [[1./2, 0], [0, 1./2]])
+x = multivariate_normal.rvs(size = 3000, mean = [1, 1], cov = [[1./8, 0], [0, 1./8]])
+y = multivariate_normal.rvs(size = 3000, mean = [1, 1], cov = [[1./2, 0], [0, 1./2]])
 result = densratio(x, y)
 print(result)
 ```
 
 ```{r engine="python", cache=TRUE, echo=FALSE}
-from numpy import random, meshgrid, linspace, array, matrix
+from numpy import random
 from scipy.stats import multivariate_normal
 from densratio import densratio
 
 random.seed(3)
-x = multivariate_normal.rvs(size = 300, mean = [1, 1], cov = [[1./8, 0], [0, 1./8]])
-y = multivariate_normal.rvs(size = 300, mean = [1, 1], cov = [[1./2, 0], [0, 1./2]])
+x = multivariate_normal.rvs(size = 3000, mean = [1, 1], cov = [[1./8, 0], [0, 1./8]])
+y = multivariate_normal.rvs(size = 3000, mean = [1, 1], cov = [[1./2, 0], [0, 1./2]])
 result = densratio(x, y, verbose = False)
 print(result)
 ```
@@ -197,6 +199,7 @@ Also in this case, we can compare the true density ratio with the estimated dens
 
 ```{r engine="python", eval=FALSE}
 from matplotlib import pyplot as plt
+from numpy import linspace, dstack, meshgrid
 
 def true_density_ratio(x):
     return multivariate_normal.pdf(x, [1., 1.], [[1./8, 0], [0, 1./8]]) / \
@@ -205,14 +208,17 @@ def true_density_ratio(x):
 def estimated_density_ratio(x):
     return result.compute_density_ratio(x)
 
-range_ = linspace(0, 2, 300)
+range_ = linspace(0, 2, 200)
 grid = dstack(meshgrid(range_, range_))
+levels = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4.5]
 
 plt.subplot(1, 2, 1)
-plt.contourf(range_, range_, true_density_ratio(grid))
+plt.contourf(range_, range_, true_density_ratio(grid), levels)
+plt.colorbar()
 plt.title("True Density Ratio")
 plt.subplot(1, 2, 2)
-plt.contourf(range_, range_, map(estimated_density_ratio, grid))
+plt.contourf(range_, range_, map(estimated_density_ratio, grid), levels)
+plt.colorbar()
 plt.title("Estimated Density Ratio")
 plt.show()
 ```
