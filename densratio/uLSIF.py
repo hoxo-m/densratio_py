@@ -12,9 +12,9 @@ def uLSIF(x, y, sigma_range = None, lambda_range = None,
     """
     if x.ndim != y.ndim:
         raise ValueError("x and y must be same dimensions.")
-    if not sigma_range:
+    if not sigma_range or sigma_range == "auto":
         sigma_range = 10 ** linspace(-3, 1, 9)
-    if not lambda_range:
+    if not lambda_range or lambda_range == "auto":
         lambda_range = 10 ** linspace(-3, 1, 9)
 
     nx = x.shape[0]
