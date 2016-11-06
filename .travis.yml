@@ -1,7 +1,8 @@
 language: python
-python:
-  - python: "2.7"
-    env: DEPS="numpy=1.9 scipy=0.16" BUILD_DOCS=false
+include:
+  matrix:
+    - python: "2.7"
+      env: DEPS="numpy=1.9 scipy=0.16" BUILD_DOCS=false
 # command to install dependencies
 install:
   - "pip install -r requirements.txt"
