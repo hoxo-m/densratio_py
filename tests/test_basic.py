@@ -2,9 +2,9 @@
 
 import unittest
 
-from context import norm, multivariate_normal
-from context import linspace
-from context import densratio
+from .context import norm, multivariate_normal
+from .context import linspace
+from .context import densratio
 
 class BasicTestSuite(unittest.TestCase):
     """Basic test cases."""
