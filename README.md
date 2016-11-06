@@ -3,6 +3,8 @@ Koji MAKIYAMA (@hoxo_m)
 
 
 
+[![Build Status](https://travis-ci.org/hoxo-m/densratio_py.svg?branch=master)](https://travis-ci.org/hoxo-m/densratio_py)
+
 ## 1. Overview
 
 **Density ratio estimation** is described as follows: for given two data samples `x` and `y` from unknown distributions `p(x)` and `q(y)` respectively, estimate `w(x) = p(x) / q(x)`, where `x` and `y` are d-dimensional real numbers.
