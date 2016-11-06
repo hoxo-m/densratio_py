@@ -14,6 +14,6 @@ before_install:
 # command to install dependencies
 install:
   - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy
-  - "pip install -r requirements.txt"
+  - python setup.py install
 # command to run tests
-script: pytest
+script: py.test
