@@ -1,19 +1,9 @@
 language: python
 python:
-  - "2.6"
-  - "2.7"
-  - "3.2"
-  - "3.3"
-  - "3.4"
-  - "3.5"
-  - "3.5-dev" # 3.5 development branch
-  - "3.6-dev" # 3.6 development branch
-  - "nightly" # currently points to 3.7-dev
-  - "pypy"
+  - python: "2.7"
+    env: DEPS="numpy=1.9 scipy=0.16" BUILD_DOCS=false
 # command to install dependencies
 install:
-  - "pip install numpy" 
-  - "pip install scipy"
   - "pip install -r requirements.txt"
 # command to run tests
 script: py.test
