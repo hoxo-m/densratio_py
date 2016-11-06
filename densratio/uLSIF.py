@@ -3,7 +3,7 @@
 from numpy import linspace, inf, exp, array, matrix, diag, multiply, ones
 from numpy.random import randint
 from numpy.linalg import norm, solve
-from density_ratio import DensityRatio, KernelInfo
+from .density_ratio import DensityRatio, KernelInfo
 
 def uLSIF(x, y, sigma_range = None, lambda_range = None,
         kernel_num = 100, verbose = True):

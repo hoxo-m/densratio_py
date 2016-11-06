@@ -7,7 +7,7 @@ densratio.core
 Estimate Density Ratio p(x)/q(y)
 """
 
-from uLSIF import uLSIF
+from .uLSIF import uLSIF
 
 def densratio(x, y, sigma = "auto", lambda_ = "auto",
         kernel_num = 100, verbose = True):

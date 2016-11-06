@@ -1,1 +1,1 @@
-from core import densratio
+from .core import densratio
