@@ -212,7 +212,7 @@ Also in this case, we can compare the true density ratio with the estimated dens
 
 ```python
 from matplotlib import pyplot as plt
-from numpy import linspace, dstack, meshgrid
+from numpy import linspace, dstack, meshgrid, concatenate
 
 def true_density_ratio(x):
     return multivariate_normal.pdf(x, [1., 1.], [[1./8, 0], [0, 1./8]]) / \
@@ -222,15 +222,15 @@ def estimated_density_ratio(x):
     return result.compute_density_ratio(x)
 
 range_ = linspace(0, 2, 200)
-grid = dstack(meshgrid(range_, range_))
+grid = concatenate(dstack(meshgrid(range_, range_)))
 levels = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4.5]
 
 plt.subplot(1, 2, 1)
-plt.contourf(range_, range_, true_density_ratio(grid), levels)
+plt.contourf(range_, range_, true_density_ratio(grid).reshape(200, 200), levels)
 plt.colorbar()
 plt.title("True Density Ratio")
 plt.subplot(1, 2, 2)
-plt.contourf(range_, range_, map(estimated_density_ratio, grid), levels)
+plt.contourf(range_, range_, estimated_density_ratio(grid).reshape(200, 200), levels)
 plt.colorbar()
 plt.title("Estimated Density Ratio")
 plt.show()
