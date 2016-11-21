@@ -20,6 +20,7 @@ if (Sys.getenv("engine.path") != "") {
 ```
 
 [![Build Status](https://travis-ci.org/hoxo-m/densratio_py.svg?branch=master)](https://travis-ci.org/hoxo-m/densratio_py)
+[![Coverage Status](https://coveralls.io/repos/github/hoxo-m/densratio_py/badge.svg?branch=master)](https://coveralls.io/github/hoxo-m/densratio_py?branch=master)
 
 ## 1. Overview
 
