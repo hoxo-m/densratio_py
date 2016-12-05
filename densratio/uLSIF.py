@@ -4,6 +4,7 @@ from numpy import inf, exp, array, matrix, diag, multiply, ones
 from numpy.random import randint
 from numpy.linalg import norm, solve
 from .density_ratio import DensityRatio, KernelInfo
+from .helpers import to_numpy_matrix
 
 def uLSIF(x, y, sigma_range, lambda_range, kernel_num = 100, verbose = True):
     """Estimate Density Ratio p(x)/q(y) by uLSIF
@@ -58,6 +59,7 @@ def uLSIF(x, y, sigma_range, lambda_range, kernel_num = 100, verbose = True):
                     centers = centers)
 
     def compute_density_ratio(x):
+        x = to_numpy_matrix(x)
         phi_x = compute_kernel_Gaussian(x, centers, sigma)
         density_ratio = phi_x.dot(matrix(alpha).T).A1
         return density_ratio

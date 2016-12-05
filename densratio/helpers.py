@@ -3,7 +3,7 @@
 from numpy import array, matrix, ndarray
 
 def is_numeric(x):
-    return isinstance(x, int) or isinstance(x, float) or isinstance(x, long)
+    return isinstance(x, int) or isinstance(x, float)
 
 def to_numpy_matrix(x):
     if isinstance(x, matrix):
@@ -14,6 +14,6 @@ def to_numpy_matrix(x):
         else:
             return matrix(x)
     elif not x:
-        raise ValueError("Cannot transform to matrix.")
+        raise ValueError("Cannot transform to numpy.matrix.")
     else:
         return to_numpy_matrix(array(x))

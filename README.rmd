@@ -143,7 +143,7 @@ where `K(x, c) = exp(- ||x - c||^2 / (2 * sigma ^ 2))` is the Gaussian RBF.
 
 As the result, you can obtain `compute_density_ratio()`.
 
-### 3.3. Result and Paremeter Settings
+### 3.3. Result and Parameter Settings
 
 `densratio()` outputs the result like as follows:
 
@@ -170,7 +170,7 @@ print(result)
 ## 4. Multi Dimensional Data Samples
 
 In the above, the input data samples `x` and `y` were one dimensional.
-`densratio()` allows to input multidimensional data samples as `matrix`.
+`densratio()` allows to input multidimensional data samples as `numpy.matrix`.
 
 For example,
 
