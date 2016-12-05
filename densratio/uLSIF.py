@@ -1,22 +1,27 @@
 # -*- coding: utf-8 -*-
 
-from numpy import linspace, inf, exp, array, matrix, diag, multiply, ones
+from numpy import inf, exp, array, matrix, diag, multiply, ones
 from numpy.random import randint
 from numpy.linalg import norm, solve
 from .density_ratio import DensityRatio, KernelInfo
 
-def uLSIF(x, y, sigma_range = None, lambda_range = None,
-        kernel_num = 100, verbose = True):
-    """
-    Estimate Density Ratio p(x)/q(y) by uLSIF (unconstrained Least-Square Importance Fitting)
-    """
-    if x.ndim != y.ndim:
-        raise ValueError("x and y must be same dimensions.")
-    if not sigma_range or sigma_range == "auto":
-        sigma_range = 10 ** linspace(-3, 1, 9)
-    if not lambda_range or lambda_range == "auto":
-        lambda_range = 10 ** linspace(-3, 1, 9)
+def uLSIF(x, y, sigma_range, lambda_range, kernel_num = 100, verbose = True):
+    """Estimate Density Ratio p(x)/q(y) by uLSIF
+                                (unconstrained Least-Square Importance Fitting)
 
+    Args:
+        x (numpy.matrix): sample from p(x).
+        y (numpy.matrix): sample from p(x).
+        sigma_range (list<float>): search range of Gaussian kernel bandwidth.
+        lambda_range (list<float>): search range of regularization parameter.
+
+    Kwargs:
+        kernel_num (int): number of kernels. (default 100)
+        verbose (bool): indicator to print messages (deafult True)
+
+    Returns:
+        densratio.DensityRatio object which has `compute_density_ratio()`.
+    """
     nx = x.shape[0]
     ny = y.shape[0]
     kernel_num = min(kernel_num, nx)

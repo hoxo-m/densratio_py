@@ -2,8 +2,8 @@
 
 import unittest
 
-from .context import norm, multivariate_normal
-from .context import linspace
+from scipy.stats import norm, multivariate_normal
+from numpy import linspace
 from .context import densratio
 
 class BasicTestSuite(unittest.TestCase):

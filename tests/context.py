@@ -2,8 +2,8 @@
 
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../densratio/'))
+sys.path.insert(0, path)
 
-from scipy.stats import norm, multivariate_normal
-from numpy import linspace
 from densratio import densratio
+import helpers

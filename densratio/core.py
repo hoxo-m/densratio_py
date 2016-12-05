@@ -7,21 +7,31 @@ densratio.core
 Estimate Density Ratio p(x)/q(y)
 """
 
+from numpy import linspace
 from .uLSIF import uLSIF
+from .helpers import to_numpy_matrix
 
-def densratio(x, y, sigma = "auto", lambda_ = "auto",
+def densratio(x, y, sigma_range = "auto", lambda_range = "auto",
         kernel_num = 100, verbose = True):
-    """
-    Estimate Density Ratio p(x)/q(y)
+    """Estimate Density Ratio p(x)/q(y)
 
-    :param x: sample from p(x)
-    :param y: sample from p(y)
-    :param sigma: search range of Gaussian kernel bandwidth
-    :param lambda_: search range of regularization parameter for uLSIF
-    :param kernel_num: number of kernels
-    :param verbose: indicator to print messages
-    :return: :class:`DensityRatio <DensityRatio>` object
-    :rtype: densratio.DensityRatio
+    Args:
+        x: sample from p(x).
+        y: sample from p(y).
+
+    Kwargs:
+        sigma_range: search range of Gaussian kernel bandwidth.
+            Default "auto" means 10^-3, 10^-2, ..., 10^9.
+        lambda_range: search range of regularization parameter for uLSIF.
+            Default "auto" means 10^-3, 10^-2, ..., 10^9.
+        kernel_num: number of kernels. Default 100.
+        verbose: indicator to print messages. Default True.
+
+    Returns:
+        densratio.DensityRatio object which has `compute_density_ratio()`.
+
+    Raises:
+        ValueError: dimension of x != dimension of y
 
     Usage::
       >>> from scipy.stats import norm
@@ -31,22 +41,23 @@ def densratio(x, y, sigma = "auto", lambda_ = "auto",
       >>> y = norm.rvs(size = 200, loc = 1, scale = 1./2)
       >>> result = densratio(x, y)
       >>> print(result)
-      Method: uLSIF
 
-      Kernel Information:
-        Kernel type: Gaussian RBF
-        Number of kernels: 100
-        Bandwidth(sigma): 0.1
-        Centers: array([ 1.04719547, 0.98294441, 1.06190142, 1.14145367, 1.18276349,..
-
-      Kernel Weights(alpha):
-        array([ 0.25340775, 0.40951303, 0.27002649, 0.17998821, 0.14524305,..
-
-      Regularization Parameter(lambda): 0.1
-
-      The Function to Estimate Density Ratio:
-        compute_density_ratio(x)
+      >>> density_ratio = result.compute_density_ratio(y)
+      >>> print(density_ratio)
     """
-    result = uLSIF(x = x, y = y, sigma_range = sigma, lambda_range = lambda_,
+
+    x = to_numpy_matrix(x)
+    y = to_numpy_matrix(y)
+
+    if x.shape[1] != y.shape[1]:
+        raise ValueError("x and y must be same dimensions.")
+
+    if not sigma_range or sigma_range == "auto":
+        sigma_range = 10 ** linspace(-3, 1, 9)
+    if not lambda_range or lambda_range == "auto":
+        lambda_range = 10 ** linspace(-3, 1, 9)
+
+    result = uLSIF(x = x, y = y,
+                   sigma_range = sigma_range, lambda_range = lambda_range,
                    kernel_num = kernel_num, verbose = verbose)
     return(result)

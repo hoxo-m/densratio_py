@@ -14,7 +14,7 @@ Other useful applications about density ratio estimation were summarized by Sugi
 
 The package **densratio** provides a function `densratio()` that returns a result has the function to estimate density ratio `compute_density_ratio()`.
 
-For example, 
+For example,
 
 
 ```python
@@ -70,7 +70,7 @@ plt.ylabel("Density Ratio")
 plt.show()
 ```
 
-![](README_files/compare-true-estimate-1.png)
+<img src="README_files/compare-true-estimate-1.png" width=600>
 
 ## 2. How to Install
 
@@ -114,7 +114,7 @@ plt.ylabel("Density Ratio")
 plt.show()
 ```
 
-![](README_files/plot-estimated-density-ratio-1.png)
+<img src="README_files/plot-estimated-density-ratio-1.png" width=600>
 
 ### 3.2. The Method
 
@@ -124,7 +124,7 @@ The package estimates density ratio by the uLSIF method.
 This algorithm estimates density ratio by minimizing the squared loss.
 You can find more information in Hido et al. (2011) [1].
 
-The method assume that the denity ratio is represented by linear model: 
+The method assume that the denity ratio is represented by linear model:
 
 `w(x) = alpha1 * K(x, c1) + alpha2 * K(x, c2) + ... + alphab * K(x, cb)`
 
@@ -164,8 +164,8 @@ As the result, you can obtain `compute_density_ratio()`.
 - **Kernel type** is fixed by Gaussian RBF.
 - **Number of kernels** is the number of kernels in the linear model. You can change by setting `kernel_num` parameter. In default, `kernel_num = 100`.
 - **Bandwidth(sigma)** is the Gaussian kernel bandwidth. In default, `sigma = None`, the algorithms automatically select the optimal value by cross validation. If you set `sigma` a number, that will be used. If you set a numeric vector, the algorithms select the optimal value in them by cross validation.
-- **Centers** are centers of Gaussian kernels in the linear model. These are selected at random from the data sample `x` underlying a numerator distribution `p(x)`. You can find the whole values in `result.kernel_info.centers`. 
-- **Kernel weights(alpha)** are alpha parameters in the linear model. It is optimaized by the algorithms. You can find the whole values in `result.alpha`. 
+- **Centers** are centers of Gaussian kernels in the linear model. These are selected at random from the data sample `x` underlying a numerator distribution `p(x)`. You can find the whole values in `result.kernel_info.centers`.
+- **Kernel weights(alpha)** are alpha parameters in the linear model. It is optimaized by the algorithms. You can find the whole values in `result.alpha`.
 - **The Funtion to Estimate Density Ratio** is named `compute_density_ratio()`.
 
 ## 4. Multi Dimensional Data Samples
@@ -242,13 +242,13 @@ The dimensions of `x` and `y` must be same.
 
 ## 5. References
 
-[1] Hido, S., Tsuboi, Y., Kashima, H., Sugiyama, M., & Kanamori, T. 
+[1] Hido, S., Tsuboi, Y., Kashima, H., Sugiyama, M., & Kanamori, T.
 **Statistical outlier detection using direct density ratio estimation.**
-Knowledge and Information Systems 2011. 
+Knowledge and Information Systems 2011.
 
-[2] Sugiyama, M., Nakajima, S., Kashima, H., von Bünau, P. & Kawanabe, M. 
+[2] Sugiyama, M., Nakajima, S., Kashima, H., von Bünau, P. & Kawanabe, M.
 **Direct importance estimation with model selection and its application to covariate shift adaptation.** NIPS 2007.
 
-[3] Sugiyama, M., Suzuki, T. & Kanamori, T. 
+[3] Sugiyama, M., Suzuki, T. & Kanamori, T.
 **Density Ratio Estimation in Machine Learning.**
 Cambridge University Press 2012.

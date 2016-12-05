@@ -10,7 +10,7 @@ with open('LICENSE') as f:
 
 setup(
     name='densratio',
-    version='0.0.3',
+    version='0.0.3.9000',
     description='A Python Package for Density Ratio Estimation',
     long_description=readme,
     author='Koji Makiyama',
