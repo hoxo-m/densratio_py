@@ -89,7 +89,8 @@ The source code for **densratio** package is available on GitHub at
 
 ### 3.1. Basics
 
-The package provides `densratio()` that the result has the function to estimate density ratio.
+The package provides `densratio()`. 
+The function returns an object that has a function to compute estimated density ratio.
 
 For data samples `x` and `y`,
 
@@ -109,7 +110,9 @@ In this case, `result.compute_density_ratio()` can compute estimated density rat
 ```r
 from matplotlib import pyplot as plt
 
-plt.plot(y, result.compute_density_ratio(y), "o")
+density_ratio = result.compute_density_ratio(y)
+
+plt.plot(y, density_ratio, "o")
 plt.xlabel("x")
 plt.ylabel("Density Ratio")
 plt.show()
@@ -171,8 +174,8 @@ As the result, you can obtain `compute_density_ratio()`.
 
 ## 4. Multi Dimensional Data Samples
 
-In the above, the input data samples `x` and `y` were one dimensional.
-`densratio()` allows to input multidimensional data samples as `numpy.matrix`.
+So far, we have deal with one-dimensional data samples `x` and `y`.
+`densratio()` allows to input multidimensional data samples as `numpy.ndarray` or `numpy.matrix`.
 
 For example,
 
