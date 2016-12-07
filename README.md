@@ -167,9 +167,9 @@ As the result, you can obtain `compute_density_ratio()`.
 - **Method** is fixed by uLSIF.
 - **Kernel type** is fixed by Gaussian RBF.
 - **Number of kernels** is the number of kernels in the linear model. You can change by setting `kernel_num` parameter. In default, `kernel_num = 100`.
-- **Bandwidth(sigma)** is the Gaussian kernel bandwidth. In default, `sigma = None`, the algorithms automatically select the optimal value by cross validation. If you set `sigma` a number, that will be used. If you set a numeric vector, the algorithms select the optimal value in them by cross validation.
+- **Bandwidth(sigma)** is the Gaussian kernel bandwidth. In default, `sigma = "auto"`, the algorithm automatically select an optimal value by cross validation. If you set `sigma` a number, that will be used. If you set a numeric array, the algorithm select an optimal value in them by cross validation.
 - **Centers** are centers of Gaussian kernels in the linear model. These are selected at random from the data sample `x` underlying a numerator distribution `p(x)`. You can find the whole values in `result.kernel_info.centers`.
-- **Kernel weights(alpha)** are alpha parameters in the linear model. It is optimaized by the algorithms. You can find the whole values in `result.alpha`.
+- **Kernel weights(alpha)** are alpha parameters in the linear model. It is optimaized by the algorithm. You can find the whole values in `result.alpha`.
 - **The Funtion to Estimate Density Ratio** is named `compute_density_ratio()`.
 
 ## 4. Multi Dimensional Data Samples
