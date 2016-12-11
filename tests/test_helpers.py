@@ -4,6 +4,7 @@ import unittest
 
 from numpy import array, matrix
 from numpy.testing import assert_array_equal
+from pandas import DataFrame
 from .context import helpers
 
 class BasicTestSuite(unittest.TestCase):
@@ -42,6 +43,10 @@ class BasicTestSuite(unittest.TestCase):
         x = helpers.to_numpy_matrix(x)
         assert_array_equal(x, matrix([[1,2],[3,4]]))
 
+    def test_to_numpy_matrix_pandas_DataFrame(self):
+        x = DataFrame([[1,2],[3,4]])
+        x = helpers.to_numpy_matrix(x)
+        assert_array_equal(x, matrix([[1,2],[3,4]]))
 
 if __name__ == '__main__':
     unittest.main()

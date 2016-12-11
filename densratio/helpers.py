@@ -13,6 +13,8 @@ def to_numpy_matrix(x):
             return matrix(x).T
         else:
             return matrix(x)
+    elif str(type(x)) == "<class 'pandas.core.frame.DataFrame'>":
+        return x.as_matrix()
     elif not x:
         raise ValueError("Cannot transform to numpy.matrix.")
     else:
