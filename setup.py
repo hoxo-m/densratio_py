@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='densratio',
-    version='0.1.3',
+    version='0.1.4',
     description='A Python Package for Density Ratio Estimation',
     long_description='A Python Package for Density Ratio Estimation',
     author='Koji Makiyama',
