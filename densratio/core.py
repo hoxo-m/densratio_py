@@ -52,9 +52,9 @@ def densratio(x, y, sigma_range = "auto", lambda_range = "auto",
     if x.shape[1] != y.shape[1]:
         raise ValueError("x and y must be same dimensions.")
 
-    if not sigma_range or sigma_range == "auto":
+    if not sigma_range or (isinstance(sigma_range, str) and sigma_range == "auto"):
         sigma_range = 10 ** linspace(-3, 1, 9)
-    if not lambda_range or lambda_range == "auto":
+    if not lambda_range or (isinstance(lambda_range, str) and lambda_range == "auto"):
         lambda_range = 10 ** linspace(-3, 1, 9)
 
     result = uLSIF(x = x, y = y,
