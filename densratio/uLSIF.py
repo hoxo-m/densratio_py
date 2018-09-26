@@ -31,7 +31,7 @@ def uLSIF(x, y, sigma_range, lambda_range, kernel_num = 100, verbose = True):
     if verbose:
         print("################## Start uLSIF ##################")
 
-    if sigma_range.size == 1 and lambda_range.size == 1:
+    if len(sigma_range) == 1 and len(lambda_range) == 1:
         sigma = sigma_range[0]
         lambda_ = lambda_range[0]
     else:
