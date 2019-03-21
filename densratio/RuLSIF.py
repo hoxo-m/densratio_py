@@ -1,19 +1,20 @@
 """
-Relative Unconstrained Least-Squares Fitting (RuLSIF)
+Relative Unconstrained Least-Squares Fitting (RuLSIF): A Python Implementation
+References:
+    'Change-point detection in time-series data by relative density-ratio estimation'
+        Song Liu, Makoto Yamada, Nigel Collier and Masashi Sugiyama,
+        Neural Networks 43 (2013) 72-83.
 
-A Python Implementation of RuLSIF for densratio.py
-Author: Ameya Daigavane
-Reference: 'Change-point detection in time-series data by relative density-ratio estimation
-            Song Liu, Makoto Yamada, Nigel Collier and Masashi Sugiyama,
-            Neural Networks 43 (2013) 72-83.'
+    'A Least-squares Approach to Direct Importance Estimation'
+        Takafumi Kanamori, Shohei Hido, and Masashi Sugiyama,
+        Journal of Machine Learning Research 10 (2009) 1391-1445.
 """
 
-from numpy import inf, array, matrix, diag, multiply, ones, asarray
+from numpy import inf, array, exp, matrix, diag, multiply, ones, asarray, log
 from numpy.random import randint
-from numpy.linalg import solve
+from numpy.linalg import norm, solve
 from .density_ratio import DensityRatio, KernelInfo
 from .helpers import to_numpy_matrix
-from .uLSIF import compute_kernel_Gaussian
 
 
 def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True):
@@ -24,23 +25,26 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
     p_alpha(y) = alpha * p(y) + (1 - alpha) * q(y)
 
     Arguments:
-        x (numpy.matrix): sample from p(x).
-        y (numpy.matrix): sample from p(x).
-        sigma_range (list<float>): search range of Gaussian kernel bandwidth.
-        lambda_range (list<float>): search range of regularization parameter.
-        kernel_num (int): number of kernels. (default 100)
-        verbose (bool): indicator to print messages (default True)
+        x (numpy.matrix): Sample from p(x).
+        y (numpy.matrix): Sample from q(y).
+        alpha (float): Mixture parameter.
+        sigma_range (list<float>): Search range of Gaussian kernel bandwidth.
+        lambda_range (list<float>): Search range of regularization parameter.
+        kernel_num (int): Number of kernels. (Default 100)
+        verbose (bool): Indicator to print messages (Default True)
 
     Returns:
         densratio.DensityRatio object which has `compute_density_ratio()`.
     """
 
-    if alpha < 0:
-        raise TypeError('Alpha must be positive.')
-
+    # Number of samples.
     nx = x.shape[0]
     ny = y.shape[0]
+
+    # Number of kernel functions.
     kernel_num = min(kernel_num, nx)
+
+    # Randomly take a subset of x, to identify centers for the kernels.
     centers = x[randint(nx, size=kernel_num)]
 
     if verbose:
@@ -53,12 +57,13 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
         if verbose:
             print("Searching for the optimal sigma and lambda...")
 
+        # Grid-search cross-validation for optimal kernel and regularization parameters.
         opt_params = search_sigma_and_lambda(x, y, alpha, centers, sigma_range, lambda_range, verbose)
         sigma = opt_params["sigma"]
         lambda_ = opt_params["lambda"]
 
         if verbose:
-            print("Found optimal sigma = %.3f, lambda = %.3f." % (sigma, lambda_))
+            print("Found optimal sigma = {:.3f}, lambda = {:.3f}.".format(sigma, lambda_))
 
     if verbose:
         print("Optimizing alpha...")
@@ -68,13 +73,55 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
     H = alpha * (phi_x.T.dot(phi_x) / nx) + (1 - alpha) * (phi_y.T.dot(phi_y) / ny)
     h = phi_x.mean(axis=0).T
     theta = asarray(solve(H + diag(array(lambda_).repeat(kernel_num)), h)).ravel()
+
+    # No negative coefficients.
     theta[theta < 0] = 0
 
-    def alpha_density_ratio(x):
-        x = to_numpy_matrix(x)
-        phi_x = compute_kernel_Gaussian(x, centers, sigma)
+    # Compute the alpha-relative density ratio, at the given coordinates.
+    def alpha_density_ratio(coordinates):
+        coordinates = to_numpy_matrix(coordinates)
+        phi_x = compute_kernel_Gaussian(coordinates, centers, sigma)
         alpha_density_ratio = asarray(phi_x.dot(matrix(theta).T)).ravel()
         return alpha_density_ratio
+
+    # Compute the approximate alpha-relative PE-divergence, given samples x and y from the respective distributions.
+    def PE_divergence(x, y):
+        # This is Y, in Reference 1.
+        x = to_numpy_matrix(x)
+        phi_x = compute_kernel_Gaussian(x, centers, sigma)
+
+        # Obtain alpha-relative density ratio at these points.
+        g_x = alpha_density_ratio(x)
+
+        # This is Y', in Reference 1.
+        y = to_numpy_matrix(y)
+        phi_y = compute_kernel_Gaussian(y, centers, sigma)
+
+        # Obtain alpha-relative density ratio at these points.
+        g_y = alpha_density_ratio(y)
+
+        # Compute the alpha-relative PE-divergence as given in Reference 1.
+        n = x.shape[0]
+        divergence = (-alpha*(g_x.T.dot(g_x))/2 - (1-alpha)*(g_y.T.dot(g_y))/2 + g_x.sum(axis=0)) / n
+        return divergence
+
+    # Compute the approximate alpha-relative KL-divergence, given samples x and y from the respective distributions.
+    def KL_divergence(x, y):
+        # This is Y, in Reference 1.
+        x = to_numpy_matrix(x)
+        phi_x = compute_kernel_Gaussian(x, centers, sigma)
+
+        # Obtain alpha-relative density ratio at these points.
+        g_x = alpha_density_ratio(x)
+
+        # Compute the alpha-relative KL-divergence.
+        n = x.shape[0]
+        divergence = log(g_x).sum(axis=0) / n
+        return divergence
+
+    if verbose:
+        print("Approximate alpha-relative PE-divergence = {:03.2f}".format(PE_divergence(x, y)))
+        print("Approximate alpha-relative KL-divergence = {:03.2f}".format(KL_divergence(x, y)))
 
     kernel_info = KernelInfo(kernel_type="Gaussian RBF", kernel_num=kernel_num, sigma=sigma, centers=centers)
     result = DensityRatio(method="RuLSIF", alpha=alpha, lambda_=lambda_, kernel_info=kernel_info, compute_density_ratio=alpha_density_ratio)
@@ -85,6 +132,7 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
     return result
 
 
+# Gridsearch for the optimal parameters sigma and lambda by leave-one-out cross-validation. See Reference 2.
 def search_sigma_and_lambda(x, y, alpha, centers, sigma_range, lambda_range, verbose):
     nx = x.shape[0]
     ny = y.shape[0]
@@ -96,12 +144,14 @@ def search_sigma_and_lambda(x, y, alpha, centers, sigma_range, lambda_range, ver
     lambda_new = 0
 
     for sigma in sigma_range:
+
         phi_x = compute_kernel_Gaussian(x, centers, sigma)
         phi_y = compute_kernel_Gaussian(y, centers, sigma)
         H = alpha * (phi_x.T.dot(phi_x) / nx) + (1 - alpha) * (phi_y.T.dot(phi_y) / ny)
         h = phi_x.mean(axis=0).T
         phi_x = phi_x[:n_min].T
         phi_y = phi_y[:n_min].T
+
         for lambda_ in lambda_range:
             B = H + diag(array(lambda_ * (ny - 1) / ny).repeat(kernel_num))
             B_inv_X = solve(B, phi_y)
@@ -114,12 +164,28 @@ def search_sigma_and_lambda(x, y, alpha, centers, sigma_range, lambda_range, ver
             r_y = multiply(phi_y, B2).sum(axis=0).T
             r_x = multiply(phi_x, B2).sum(axis=0).T
 
+            # Squared loss of RuLSIF, without regularization term.
+            # Directly related to the negative of the PE-divergence.
             score = (r_y.T.dot(r_y).A1 / 2 - r_x.sum(axis=0)) / n_min
+
+            if verbose:
+                print("sigma = %.5f, lambda = %.5f, score = %.5f" % (sigma, lambda_, score))
+
             if score < score_new:
-                if verbose:
-                    print("sigma = %.3f, lambda = %.3f, score = %.3f" % (sigma, lambda_, score))
                 score_new = score
                 sigma_new = sigma
                 lambda_new = lambda_
 
     return {"sigma": sigma_new, "lambda": lambda_new}
+
+
+# Returns a 2D numpy matrix of kernel evaluated at the gridpoints with coordinates from x_list and y_list.
+def compute_kernel_Gaussian(x_list, y_list, sigma):
+    result = [[kernel_Gaussian(x, y, sigma) for y in y_list] for x in x_list]
+    result = matrix(result)
+    return result
+
+
+# Returns the Gaussian kernel evaluated at (x, y) with parameter sigma.
+def kernel_Gaussian(x, y, sigma):
+    return exp(- norm(x - y) / (2 * sigma * sigma))

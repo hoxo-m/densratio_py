@@ -115,13 +115,4 @@ def search_sigma_and_lambda(x, y, centers, sigma_range, lambda_range, verbose):
     return {"sigma": sigma_new, "lambda": lambda_new}
 
 
-# Returns a 2D numpy matrix of kernel evaluated at the gridpoints with coordinates from x_list and y_list.
-def compute_kernel_Gaussian(x_list, y_list, sigma):
-    result = [[kernel_Gaussian(x, y, sigma) for y in y_list] for x in x_list]
-    result = matrix(result)
-    return result
 
-
-# Returns the Gaussian kernel evaluated at (x, y) with parameter sigma.
-def kernel_Gaussian(x, y, sigma):
-    return exp(- norm(x - y) / (2 * sigma * sigma))
