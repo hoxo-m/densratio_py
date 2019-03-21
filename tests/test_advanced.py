@@ -6,12 +6,14 @@ from .context import densratio
 from scipy.stats import norm, cauchy, uniform, bernoulli
 import numpy as np
 import unittest
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 
 class AdvancedTestSuite(unittest.TestCase):
 
-    def test_plot_normalrv(self):
+    def test_plot_normalrv_1(self):
         def true_density_ratio(sample):
             return norm.pdf(sample, 0, 1./8) / (alpha * norm.pdf(sample, 0, 1./8) + (1 - alpha) * norm.pdf(sample, 0, 1./2))
 
@@ -22,6 +24,26 @@ class AdvancedTestSuite(unittest.TestCase):
         x = norm.rvs(size=200, loc=0, scale=1./8)
         y = norm.rvs(size=200, loc=0, scale=1./2)
         alpha = 0
+        densratio_obj = densratio(x, y, alpha=alpha)
+        sample_points = np.linspace(-1, 3, 400)
+        plt.plot(sample_points, true_density_ratio(sample_points), 'b-', label='True Density Ratio')
+        plt.plot(sample_points, estimated_density_ratio(sample_points), 'r-', label='Estimated Density Ratio')
+        plt.title("Alpha-Relative Density Ratio - Normal Random Variables (alpha={:03.2f})".format(alpha))
+        plt.legend()
+        plt.show()
+        assert True
+
+    def test_plot_normalrv_2(self):
+        def true_density_ratio(sample):
+            return norm.pdf(sample, 0, 1./8) / (alpha * norm.pdf(sample, 0, 1./8) + (1 - alpha) * norm.pdf(sample, 0, 1./2))
+
+        def estimated_density_ratio(sample):
+            return densratio_obj.compute_density_ratio(sample)
+
+        np.random.seed(1)
+        x = norm.rvs(size=200, loc=0, scale=1./8)
+        y = norm.rvs(size=200, loc=0, scale=1./2)
+        alpha = 0.1
         densratio_obj = densratio(x, y, alpha=alpha)
         sample_points = np.linspace(-1, 3, 400)
         plt.plot(sample_points, true_density_ratio(sample_points), 'b-', label='True Density Ratio')

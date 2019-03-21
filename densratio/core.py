@@ -8,7 +8,6 @@ Estimate Density Ratio p(x)/q(y)
 """
 
 from numpy import linspace
-from .uLSIF import uLSIF
 from .RuLSIF import RuLSIF
 from .helpers import to_numpy_matrix
 
