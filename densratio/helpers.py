@@ -2,8 +2,10 @@
 
 from numpy import array, matrix, ndarray
 
+
 def is_numeric(x):
     return isinstance(x, int) or isinstance(x, float)
+
 
 def to_numpy_matrix(x):
     if isinstance(x, matrix):

@@ -18,8 +18,9 @@ before_install:
 
 # command to install dependencies
 install:
-  - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy nose pandas
   - conda create --yes -n=travis python=$TRAVIS_PYTHON_VERSION
+  - source activate travis
+  - conda install --yes numpy scipy nose pandas matplotlib
   - pip install coveralls
   - python setup.py install
 
