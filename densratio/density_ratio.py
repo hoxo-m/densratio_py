@@ -3,6 +3,7 @@
 from pprint import pformat
 from re import sub
 
+
 class DensityRatio:
     """Density Ratio."""
     def __init__(self, method, alpha, lambda_, kernel_info, compute_density_ratio):
@@ -26,8 +27,8 @@ Regularization Parameter(lambda): %(lambda_)s
 
 The Function to Estimate Density Ratio:
   compute_density_ratio(x)
-"""[1:-1] % dict(method = self.method, kernel_info = self.kernel_info,
-                alpha = my_format(self.alpha), lambda_ = self.lambda_)
+"""[1:-1] % dict(method=self.method, kernel_info=self.kernel_info, alpha=my_format(self.alpha), lambda_=self.lambda_)
+
 
 class KernelInfo:
     """Kernel Information."""
@@ -43,8 +44,8 @@ class KernelInfo:
   Number of kernels: %(kernel_num)s
   Bandwidth(sigma): %(sigma)s
   Centers: %(centers)s
-"""[1:-1] % dict(kernel_type = self.kernel_type, kernel_num = self.kernel_num,
-                sigma = self.sigma, centers = my_format(self.centers))
+"""[1:-1] % dict(kernel_type=self.kernel_type, kernel_num=self.kernel_num, sigma=self.sigma, centers=my_format(self.centers))
+
 
 def my_format(str):
     return sub(r"\s+" , " ", (pformat(str).split("\n")[0] + ".."))

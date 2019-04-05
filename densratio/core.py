@@ -8,18 +8,17 @@ Estimate Density Ratio p(x)/q(y)
 """
 
 from numpy import linspace
-from .uLSIF import uLSIF
+from .RuLSIF import RuLSIF
 from .helpers import to_numpy_matrix
 
-def densratio(x, y, sigma_range = "auto", lambda_range = "auto",
-        kernel_num = 100, verbose = True):
-    """Estimate Density Ratio p(x)/q(y)
 
-    Args:
-        x: sample from p(x).
-        y: sample from p(y).
+def densratio(x, y, alpha=0, sigma_range="auto", lambda_range="auto", kernel_num=100, verbose=True):
+    """ Estimate alpha-mixture Density Ratio p(X)/(alpha*p(X) + (1 - alpha)*q(Y))
 
-    Kwargs:
+    Arguments:
+        x: sample from p(X).
+        y: sample from q(Y).
+        alpha: Default 0 - corresponds to ordinary density ratio.
         sigma_range: search range of Gaussian kernel bandwidth.
             Default "auto" means 10^-3, 10^-2, ..., 10^9.
         lambda_range: search range of regularization parameter for uLSIF.
@@ -31,15 +30,15 @@ def densratio(x, y, sigma_range = "auto", lambda_range = "auto",
         densratio.DensityRatio object which has `compute_density_ratio()`.
 
     Raises:
-        ValueError: dimension of x != dimension of y
+        ValueError: if dimension of x != dimension of y
 
     Usage::
       >>> from scipy.stats import norm
       >>> from densratio import densratio
 
-      >>> x = norm.rvs(size = 200, loc = 1, scale = 1./8)
-      >>> y = norm.rvs(size = 200, loc = 1, scale = 1./2)
-      >>> result = densratio(x, y)
+      >>> x = norm.rvs(size=200, loc=1, scale=1./8)
+      >>> y = norm.rvs(size=200, loc=1, scale=1./2)
+      >>> result = densratio(x, y, alpha=0.7)
       >>> print(result)
 
       >>> density_ratio = result.compute_density_ratio(y)
@@ -53,11 +52,9 @@ def densratio(x, y, sigma_range = "auto", lambda_range = "auto",
         raise ValueError("x and y must be same dimensions.")
 
     if not sigma_range or sigma_range == "auto":
-        sigma_range = 10 ** linspace(-3, 1, 9)
+        sigma_range = 10 ** linspace(-3, 9, 13)
     if not lambda_range or lambda_range == "auto":
-        lambda_range = 10 ** linspace(-3, 1, 9)
+        lambda_range = 10 ** linspace(-3, 9, 13)
 
-    result = uLSIF(x = x, y = y,
-                   sigma_range = sigma_range, lambda_range = lambda_range,
-                   kernel_num = kernel_num, verbose = verbose)
-    return(result)
+    result = RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num, verbose)
+    return result
