@@ -51,9 +51,9 @@ def densratio(x, y, alpha=0, sigma_range="auto", lambda_range="auto", kernel_num
     if x.shape[1] != y.shape[1]:
         raise ValueError("x and y must be same dimensions.")
 
-    if not sigma_range or sigma_range == "auto":
+    if not sigma_range or (isinstance(sigma_range, str) and sigma_range == "auto"):
         sigma_range = 10 ** linspace(-3, 9, 13)
-    if not lambda_range or lambda_range == "auto":
+    if not lambda_range or (isinstance(lambda_range, str) and lambda_range == "auto"):
         lambda_range = 10 ** linspace(-3, 9, 13)
 
     result = RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num, verbose)
