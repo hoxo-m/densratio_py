@@ -285,5 +285,6 @@ Knowledge and Information Systems 2011.
 **Density Ratio Estimation in Machine Learning.**
 Cambridge University Press 2012.
 
+[4] Liu, S., Yamada, M., Collier, N., & Sugiyama, M.
 **Change-Point Detection in Time-Series Data by Relative Density-Ratio Estimation**
 Neural Networks, 2013.
