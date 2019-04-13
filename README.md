@@ -11,9 +11,9 @@ Koji MAKIYAMA (hoxo_m), Ameya Daigavane (ameya98)
 **Density ratio estimation** is described as follows: for given two data samples `x1` and `x2` from unknown distributions `p(x)` and `q(x)` respectively, estimate `w(x) = p(x) / q(x)`, where `x1` and `x2` are d-dimensional real numbers.
 
 The estimated density ratio function `w(x)` can be used in many applications such as the inlier-based outlier detection [1] and covariate shift adaptation [2].
-Other useful applications about density ratio estimation were summarized by Sugiyama et al. (2012) [3].
+Other useful applications for density ratio estimation were summarized by Sugiyama et al. (2012) in [3].
 
-The package **densratio** provides a function `densratio()` that returns a result has the function to estimate density ratio `compute_density_ratio()`.
+The package **densratio** provides a function `densratio()` that returns an object with a method to estimate density ratio as `compute_density_ratio()`.
 
 Further, the alpha-relative density ratio `p(x)/(alpha * p(x) + (1 - alpha) * q(x))` (where alpha is in the range [0, 1]) can also be estimated.
 When alpha is 0, this reduces to the ordinary density ratio `w(x)`.
@@ -141,6 +141,7 @@ plt.show()
 <p align="center">
 <img src="README_files/plot-estimated-density-ratio-1.png" width=600 align="center">
 </p>
+
 ### 3.2. The Method
 
 The package estimates density ratio by the RuLSIF method.
@@ -151,8 +152,7 @@ You can find more information in Hido et al. (2011) [1] and Liu et al (2013) [4]
 The method assumes that the alpha-relative density ratio is represented by a linear kernel model:
 
 `w(x) = theta1 * K(x, c1) + theta2 * K(x, c2) + ... + thetab * K(x, cb)`
-
-where `K(x, c) = exp(- ||x - c||^2 / (2 * sigma ^ 2))` is the Gaussian RBF.
+where `K(x, c) = exp(- ||x - c||^2 / (2 * sigma ^ 2))` is the Gaussian RBF kernel.
 
 `densratio()` performs the following:
 - Decides kernel parameter `sigma` by cross-validation.
@@ -269,7 +269,7 @@ plt.title("Estimated Alpha-Relative Density Ratio")
 plt.show()
 ```
 <p align="center">
-<img src="README_filescompare-2d-2.png" width=600 align="center">
+<img src="README_files/compare-2d-2.png" width=600 align="center">
 </p>
 
 ## 5. References
