@@ -1,7 +1,5 @@
 # A Python Package for Density Ratio Estimation
-Koji MAKIYAMA (@hoxo_m)  
-
-
+Koji MAKIYAMA (hoxo_m), Ameya Daigavane (ameya98)
 
 [![Build Status](https://travis-ci.org/hoxo-m/densratio_py.svg?branch=master)](https://travis-ci.org/hoxo-m/densratio_py)
 [![PyPI](https://img.shields.io/pypi/v/densratio.svg)](https://pypi.python.org/pypi/densratio)
