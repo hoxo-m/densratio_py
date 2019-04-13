@@ -7,7 +7,7 @@ from scipy.stats import norm, cauchy, uniform, bernoulli, multivariate_normal
 import numpy as np
 import unittest
 import matplotlib
-#matplotlib.use('Agg')
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 
@@ -47,8 +47,8 @@ class AdvancedTestSuite(unittest.TestCase):
         alpha = 0.1
         densratio_obj = densratio(x, y, alpha=alpha)
         sample_points = np.linspace(-1, 3, 400)
-        plt.plot(sample_points, true_alpha_density_ratio(sample_points), 'b-', label='True Density Ratio')
-        plt.plot(sample_points, estimated_alpha_density_ratio(sample_points), 'r-', label='Estimated Density Ratio')
+        plt.plot(sample_points, true_alpha_density_ratio(sample_points), 'b-', label='True Alpha-Relative Density Ratio')
+        plt.plot(sample_points, estimated_alpha_density_ratio(sample_points), 'r-', label='Estimated Alpha-Relative Density Ratio')
         plt.title("Alpha-Relative Density Ratio - Normal Random Variables (alpha={:03.2f})".format(alpha))
         plt.legend()
         plt.show()
@@ -67,8 +67,8 @@ class AdvancedTestSuite(unittest.TestCase):
         alpha = 0
         densratio_obj = densratio(x, y, alpha=alpha)
         sample_points = np.linspace(-1, 3, 400)
-        plt.plot(sample_points, true_alpha_density_ratio(sample_points), 'b-', label='True Density Ratio')
-        plt.plot(sample_points, estimated_alpha_density_ratio(sample_points), 'r-', label='Estimated Density Ratio')
+        plt.plot(sample_points, true_alpha_density_ratio(sample_points), 'b-', label='True Alpha-Relative Density Ratio')
+        plt.plot(sample_points, estimated_alpha_density_ratio(sample_points), 'r-', label='Estimated Alpha-Relative Density Ratio')
         plt.title("Alpha-Relative Density Ratio - Cauchy Random Variables (alpha={:03.2f})".format(alpha))
         plt.legend()
         plt.show()
@@ -91,8 +91,8 @@ class AdvancedTestSuite(unittest.TestCase):
         y = uniform.rvs(size=200, loc=-10, scale=20)
         densratio_obj = densratio(x, y, alpha=alpha)
         sample_points = np.linspace(-1, 3, 400)
-        plt.plot(sample_points, true_alpha_density_ratio(sample_points), 'b-', label='True Density Ratio')
-        plt.plot(sample_points, estimated_alpha_density_ratio(sample_points), 'r-', label='Estimated Density Ratio')
+        plt.plot(sample_points, true_alpha_density_ratio(sample_points), 'b-', label='True Alpha-Relative Density Ratio')
+        plt.plot(sample_points, estimated_alpha_density_ratio(sample_points), 'r-', label='Estimated Alpha-Relative Density Ratio')
         plt.title("Alpha-Relative Density Ratio - Bimodal Density Ratio (alpha={:03.2f})".format(alpha))
         plt.legend()
         plt.show()
@@ -115,8 +115,8 @@ class AdvancedTestSuite(unittest.TestCase):
         y = uniform.rvs(size=200, loc=-10, scale=20)
         densratio_obj = densratio(x, y, alpha=alpha)
         sample_points = np.linspace(-1, 3, 400)
-        plt.plot(sample_points, true_alpha_density_ratio(sample_points), 'b-', label='True Density Ratio')
-        plt.plot(sample_points, estimated_alpha_density_ratio(sample_points), 'r-', label='Estimated Density Ratio')
+        plt.plot(sample_points, true_alpha_density_ratio(sample_points), 'b-', label='True Alpha-Relative Density Ratio')
+        plt.plot(sample_points, estimated_alpha_density_ratio(sample_points), 'r-', label='Estimated Alpha-Relative Density Ratio')
         plt.title("Alpha-Relative Density Ratio - Bimodal Density Ratio (alpha={:03.2f})".format(alpha))
         plt.legend()
         plt.show()
@@ -139,8 +139,8 @@ class AdvancedTestSuite(unittest.TestCase):
         y = uniform.rvs(size=200, loc=-10, scale=20)
         densratio_obj = densratio(x, y, alpha=alpha)
         sample_points = np.linspace(-1, 3, 400)
-        plt.plot(sample_points, true_alpha_density_ratio(sample_points), 'b-', label='True Density Ratio')
-        plt.plot(sample_points, estimated_alpha_density_ratio(sample_points), 'r-', label='Estimated Density Ratio')
+        plt.plot(sample_points, true_alpha_density_ratio(sample_points), 'b-', label='True Alpha-Relative Density Ratio')
+        plt.plot(sample_points, estimated_alpha_density_ratio(sample_points), 'r-', label='Estimated Alpha-Relative Density Ratio')
         plt.title("Alpha-Relative Density Ratio - Bimodal Density Ratio (alpha={:03.2f})".format(alpha))
         plt.legend()
         plt.show()
@@ -159,8 +159,8 @@ class AdvancedTestSuite(unittest.TestCase):
         alpha = 1
         densratio_obj = densratio(x, y, alpha=alpha)
         sample_points = np.linspace(-1, 3, 400)
-        plt.plot(sample_points, true_alpha_density_ratio(sample_points), 'b-', label='True Density Ratio')
-        plt.plot(sample_points, estimated_alpha_density_ratio(sample_points), 'r-', label='Estimated Density Ratio')
+        plt.plot(sample_points, true_alpha_density_ratio(sample_points), 'b-', label='True Alpha-Relative Density Ratio')
+        plt.plot(sample_points, estimated_alpha_density_ratio(sample_points), 'r-', label='Estimated Alpha-Relative Density Ratio')
         plt.title("Alpha-Relative Density Ratio - Normal Random Variables (alpha={:03.2f})".format(alpha))
         plt.legend()
         plt.show()
@@ -179,8 +179,8 @@ class AdvancedTestSuite(unittest.TestCase):
         alpha = 0.5
         densratio_obj = densratio(x, y, alpha=alpha)
         sample_points = np.linspace(-1, 3, 400)
-        plt.plot(sample_points, true_alpha_density_ratio(sample_points), 'b-', label='True Density Ratio')
-        plt.plot(sample_points, estimated_alpha_density_ratio(sample_points), 'r-', label='Estimated Density Ratio')
+        plt.plot(sample_points, true_alpha_density_ratio(sample_points), 'b-', label='True Alpha-Relative Density Ratio')
+        plt.plot(sample_points, estimated_alpha_density_ratio(sample_points), 'r-', label='Estimated Alpha-Relative Density Ratio')
         plt.title("Alpha-Relative Density Ratio - Normal Random Variables (alpha={:03.2f})".format(alpha))
         plt.legend()
         plt.show()
@@ -199,8 +199,8 @@ class AdvancedTestSuite(unittest.TestCase):
         alpha = 0.2
         densratio_obj = densratio(x, y, alpha=alpha)
         sample_points = np.linspace(-1, 3, 400)
-        plt.plot(sample_points, true_alpha_density_ratio(sample_points), 'b-', label='True Density Ratio')
-        plt.plot(sample_points, estimated_alpha_density_ratio(sample_points), 'r-', label='Estimated Density Ratio')
+        plt.plot(sample_points, true_alpha_density_ratio(sample_points), 'b-', label='True Alpha-Relative Density Ratio')
+        plt.plot(sample_points, estimated_alpha_density_ratio(sample_points), 'r-', label='Estimated Alpha-Relative Density Ratio')
         plt.title("Alpha-Relative Density Ratio - Normal Random Variables (alpha={:03.2f})".format(alpha))
         plt.legend()
         plt.show()
