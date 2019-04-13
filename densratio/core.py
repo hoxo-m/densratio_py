@@ -13,11 +13,11 @@ from .helpers import to_numpy_matrix
 
 
 def densratio(x, y, alpha=0, sigma_range="auto", lambda_range="auto", kernel_num=100, verbose=True):
-    """ Estimate alpha-mixture Density Ratio p(X)/(alpha*p(X) + (1 - alpha)*q(Y))
+    """ Estimate alpha-mixture Density Ratio p(x)/(alpha*p(x) + (1 - alpha)*q(x))
 
     Arguments:
-        x: sample from p(X).
-        y: sample from q(Y).
+        x: sample from p(x).
+        y: sample from q(x).
         alpha: Default 0 - corresponds to ordinary density ratio.
         sigma_range: search range of Gaussian kernel bandwidth.
             Default "auto" means 10^-3, 10^-2, ..., 10^9.
@@ -51,9 +51,9 @@ def densratio(x, y, alpha=0, sigma_range="auto", lambda_range="auto", kernel_num
     if x.shape[1] != y.shape[1]:
         raise ValueError("x and y must be same dimensions.")
 
-    if not sigma_range or sigma_range == "auto":
+    if sigma_range is None or sigma_range == "auto":
         sigma_range = 10 ** linspace(-3, 9, 13)
-    if not lambda_range or lambda_range == "auto":
+    if lambda_range is None or lambda_range == "auto":
         lambda_range = 10 ** linspace(-3, 9, 13)
 
     result = RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num, verbose)
