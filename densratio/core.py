@@ -57,9 +57,10 @@ def densratio(x, y, alpha=0, sigma_range="auto", lambda_range="auto", kernel_num
     if isinstance(lambda_range, str) and lambda_range != "auto":
         raise TypeError("Invalid value for lambda_range.")
 
-    if not sigma_range or (isinstance(sigma_range, str) and sigma_range == "auto"):
+    if sigma_range is None or (isinstance(sigma_range, str) and sigma_range == "auto"):
         sigma_range = 10 ** linspace(-3, 9, 13)
-    if not lambda_range or (isinstance(lambda_range, str) and lambda_range == "auto"):
+
+    if lambda_range is None or (isinstance(lambda_range, str) and lambda_range == "auto"):
         lambda_range = 10 ** linspace(-3, 9, 13)
 
     result = RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num, verbose)
