@@ -107,7 +107,6 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
     def alpha_KL_divergence(x, y):
         # This is Y, in Reference 1.
         x = to_numpy_matrix(x)
-        phi_x = compute_kernel_Gaussian(x, centers, sigma)
 
         # Obtain alpha-relative density ratio at these points.
         g_x = alpha_density_ratio(x)
