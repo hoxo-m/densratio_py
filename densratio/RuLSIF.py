@@ -79,9 +79,11 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
 
     # Compute the alpha-relative density ratio, at the given coordinates.
     def alpha_density_ratio(coordinates):
+        # Evaluate the kernel at these coordinates, and take the dot-product with the weights.
         coordinates = to_numpy_matrix(coordinates)
         phi_x = compute_kernel_Gaussian(coordinates, centers, sigma)
         alpha_density_ratio = asarray(phi_x.dot(matrix(theta).T)).ravel()
+
         return alpha_density_ratio
 
     # Compute the approximate alpha-relative PE-divergence, given samples x and y from the respective distributions.
@@ -100,7 +102,7 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
 
         # Compute the alpha-relative PE-divergence as given in Reference 1.
         n = x.shape[0]
-        divergence = (-alpha*(g_x.T.dot(g_x))/2 - (1-alpha)*(g_y.T.dot(g_y))/2 + g_x.sum(axis=0))/n - 1/2
+        divergence = (-alpha*(g_x.T.dot(g_x))/2 - (1-alpha)*(g_y.T.dot(g_y))/2 + g_x.sum(axis=0))/n - 1./2
         return divergence
 
     # Compute the approximate alpha-relative KL-divergence, given samples x and y from the respective distributions.
