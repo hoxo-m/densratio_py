@@ -88,21 +88,19 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
     def alpha_PE_divergence(x, y):
         # This is Y, in Reference 1.
         x = to_numpy_matrix(x)
-        phi_x = compute_kernel_Gaussian(x, centers, sigma)
 
         # Obtain alpha-relative density ratio at these points.
         g_x = alpha_density_ratio(x)
 
         # This is Y', in Reference 1.
         y = to_numpy_matrix(y)
-        phi_y = compute_kernel_Gaussian(y, centers, sigma)
 
         # Obtain alpha-relative density ratio at these points.
         g_y = alpha_density_ratio(y)
 
         # Compute the alpha-relative PE-divergence as given in Reference 1.
         n = x.shape[0]
-        divergence = (-alpha*(g_x.T.dot(g_x))/2 - (1-alpha)*(g_y.T.dot(g_y))/2 + g_x.sum(axis=0)) / n
+        divergence = (-alpha*(g_x.T.dot(g_x))/2 - (1-alpha)*(g_y.T.dot(g_y))/2 + g_x.sum(axis=0))/n - 1/2
         return divergence
 
     # Compute the approximate alpha-relative KL-divergence, given samples x and y from the respective distributions.
