@@ -6,10 +6,13 @@ from re import sub
 
 class DensityRatio:
     """Density Ratio."""
-    def __init__(self, method, alpha, lambda_, kernel_info, compute_density_ratio):
+    def __init__(self, method, alpha, theta, lambda_, alpha_PE, alpha_KL, kernel_info, compute_density_ratio):
         self.method = method
         self.alpha = alpha
+        self.theta = theta
         self.lambda_ = lambda_
+        self.alpha_PE = alpha_PE
+        self.alpha_KL = alpha_KL
         self.kernel_info = kernel_info
         self.compute_density_ratio = compute_density_ratio
 
@@ -17,17 +20,24 @@ class DensityRatio:
         return """
 Method: %(method)s
 
+Alpha: %(alpha)s
+
 Kernel Information:
 %(kernel_info)s
 
-Kernel Weights(alpha):
-  %(alpha)s
+Kernel Weights (theta):
+  %(theta)s
 
-Regularization Parameter(lambda): %(lambda_)s
+Regularization Parameter (lambda): %(lambda_)s
 
-The Function to Estimate Density Ratio:
+Alpha-Relative PE-Divergence: %(alpha_PE)s
+
+Alpha-Relative KL-Divergence: %(alpha_KL)s
+
+Function to Estimate Density Ratio:
   compute_density_ratio(x)
-"""[1:-1] % dict(method=self.method, kernel_info=self.kernel_info, alpha=my_format(self.alpha), lambda_=self.lambda_)
+  
+"""[1:-1] % dict(method=self.method, kernel_info=self.kernel_info, alpha=self.alpha, theta=my_format(self.theta), lambda_=self.lambda_, alpha_PE=self.alpha_PE, alpha_KL=self.alpha_KL)
 
 
 class KernelInfo:

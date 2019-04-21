@@ -19,14 +19,14 @@ from .helpers import to_numpy_matrix
 
 def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True):
     """
-    Estimation of the alpha-Relative Density Ratio p(x)/p_alpha(y) by RuLSIF
+    Estimation of the alpha-Relative Density Ratio p(x)/p_alpha(x) by RuLSIF
     (Relative Unconstrained Least-Square Importance Fitting)
 
-    p_alpha(y) = alpha * p(y) + (1 - alpha) * q(y)
+    p_alpha(x) = alpha * p(x) + (1 - alpha) * q(x)
 
     Arguments:
         x (numpy.matrix): Sample from p(x).
-        y (numpy.matrix): Sample from q(y).
+        y (numpy.matrix): Sample from q(x).
         alpha (float): Mixture parameter.
         sigma_range (list<float>): Search range of Gaussian kernel bandwidth.
         lambda_range (list<float>): Search range of regularization parameter.
@@ -50,7 +50,7 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
     if verbose:
         print("RuLSIF starting...")
 
-    if sigma_range.size == 1 and lambda_range.size == 1:
+    if len(sigma_range) == 1 and len(lambda_range) == 1:
         sigma = sigma_range[0]
         lambda_ = lambda_range[0]
     else:
@@ -66,7 +66,7 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
             print("Found optimal sigma = {:.3f}, lambda = {:.3f}.".format(sigma, lambda_))
 
     if verbose:
-        print("Optimizing alpha...")
+        print("Optimizing theta...")
 
     phi_x = compute_kernel_Gaussian(x, centers, sigma)
     phi_y = compute_kernel_Gaussian(y, centers, sigma)
@@ -79,37 +79,36 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
 
     # Compute the alpha-relative density ratio, at the given coordinates.
     def alpha_density_ratio(coordinates):
+        # Evaluate the kernel at these coordinates, and take the dot-product with the weights.
         coordinates = to_numpy_matrix(coordinates)
         phi_x = compute_kernel_Gaussian(coordinates, centers, sigma)
         alpha_density_ratio = asarray(phi_x.dot(matrix(theta).T)).ravel()
+
         return alpha_density_ratio
 
     # Compute the approximate alpha-relative PE-divergence, given samples x and y from the respective distributions.
-    def PE_divergence(x, y):
+    def alpha_PE_divergence(x, y):
         # This is Y, in Reference 1.
         x = to_numpy_matrix(x)
-        phi_x = compute_kernel_Gaussian(x, centers, sigma)
 
         # Obtain alpha-relative density ratio at these points.
         g_x = alpha_density_ratio(x)
 
         # This is Y', in Reference 1.
         y = to_numpy_matrix(y)
-        phi_y = compute_kernel_Gaussian(y, centers, sigma)
 
         # Obtain alpha-relative density ratio at these points.
         g_y = alpha_density_ratio(y)
 
         # Compute the alpha-relative PE-divergence as given in Reference 1.
         n = x.shape[0]
-        divergence = (-alpha*(g_x.T.dot(g_x))/2 - (1-alpha)*(g_y.T.dot(g_y))/2 + g_x.sum(axis=0)) / n
+        divergence = (-alpha*(g_x.T.dot(g_x))/2 - (1-alpha)*(g_y.T.dot(g_y))/2 + g_x.sum(axis=0))/n - 1./2
         return divergence
 
     # Compute the approximate alpha-relative KL-divergence, given samples x and y from the respective distributions.
-    def KL_divergence(x, y):
+    def alpha_KL_divergence(x, y):
         # This is Y, in Reference 1.
         x = to_numpy_matrix(x)
-        phi_x = compute_kernel_Gaussian(x, centers, sigma)
 
         # Obtain alpha-relative density ratio at these points.
         g_x = alpha_density_ratio(x)
@@ -119,12 +118,16 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
         divergence = log(g_x).sum(axis=0) / n
         return divergence
 
+    alpha_PE = alpha_PE_divergence(x, y)
+    alpha_KL = alpha_KL_divergence(x, y)
+
     if verbose:
-        print("Approximate alpha-relative PE-divergence = {:03.2f}".format(PE_divergence(x, y)))
-        print("Approximate alpha-relative KL-divergence = {:03.2f}".format(KL_divergence(x, y)))
+        print("Approximate alpha-relative PE-divergence = {:03.2f}".format(alpha_PE))
+        print("Approximate alpha-relative KL-divergence = {:03.2f}".format(alpha_KL))
 
     kernel_info = KernelInfo(kernel_type="Gaussian RBF", kernel_num=kernel_num, sigma=sigma, centers=centers)
-    result = DensityRatio(method="RuLSIF", alpha=alpha, lambda_=lambda_, kernel_info=kernel_info, compute_density_ratio=alpha_density_ratio)
+    result = DensityRatio(method="RuLSIF", alpha=alpha, theta=theta, lambda_=lambda_, alpha_PE=alpha_PE, alpha_KL=alpha_KL,
+                          kernel_info=kernel_info, compute_density_ratio=alpha_density_ratio)
 
     if verbose:
         print("RuLSIF completed.")
@@ -132,7 +135,7 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
     return result
 
 
-# Gridsearch for the optimal parameters sigma and lambda by leave-one-out cross-validation. See Reference 2.
+# Grid-search cross-validation for the optimal parameters sigma and lambda by leave-one-out cross-validation. See Reference 2.
 def search_sigma_and_lambda(x, y, alpha, centers, sigma_range, lambda_range, verbose):
     nx = x.shape[0]
     ny = y.shape[0]

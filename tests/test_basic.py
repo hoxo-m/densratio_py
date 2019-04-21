@@ -12,8 +12,9 @@ class BasicTestSuite(unittest.TestCase):
     def test_densratio_1d(self):
         x = norm.rvs(size=200, loc=0, scale=1./8, random_state=71)
         y = norm.rvs(size=200, loc=0, scale=1./2, random_state=71)
-        result = densratio(x, y)
+        result = densratio(x, y, alpha=0)
         self.assertIsNotNone(result)
+        print(result)
         density_ratio = result.compute_density_ratio(linspace(-1, 3))
         # print(density_ratio)
 
