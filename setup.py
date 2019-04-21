@@ -11,7 +11,7 @@ setup(
     description='A Python Package for Density Ratio Estimation',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    author='Koji Makiyama',
+    author='Koji Makiyama, Ameya Daigavane',
     author_email='hoxo.smile@gmail.com',
     install_requires=['numpy'],
     url='https://github.com/hoxo-m/densratio_py',
