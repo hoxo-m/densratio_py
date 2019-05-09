@@ -125,7 +125,7 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
         print("Approximate alpha-relative PE-divergence = {:03.2f}".format(alpha_PE))
         print("Approximate alpha-relative KL-divergence = {:03.2f}".format(alpha_KL))
 
-    kernel_info = KernelInfo(kernel_type="Gaussian RBF", kernel_num=kernel_num, sigma=sigma, centers=centers)
+    kernel_info = KernelInfo(kernel_type="Gaussian", kernel_num=kernel_num, sigma=sigma, centers=centers)
     result = DensityRatio(method="RuLSIF", alpha=alpha, theta=theta, lambda_=lambda_, alpha_PE=alpha_PE, alpha_KL=alpha_KL,
                           kernel_info=kernel_info, compute_density_ratio=alpha_density_ratio)
 
@@ -191,4 +191,4 @@ def compute_kernel_Gaussian(x_list, y_list, sigma):
 
 # Returns the Gaussian kernel evaluated at (x, y) with parameter sigma.
 def kernel_Gaussian(x, y, sigma):
-    return exp(- norm(x - y) / (2 * sigma * sigma))
+    return exp(- (norm(x - y) ** 2) / (2 * sigma * sigma))
