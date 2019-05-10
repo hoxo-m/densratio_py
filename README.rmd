@@ -4,8 +4,7 @@ author: Koji MAKIYAMA (hoxo_m), Ameya Daigavane (ameya98)
 output:
   md_document:
     variant: gfm
-  html_document:
-    keep_md: yes
+  html_document
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -113,16 +112,17 @@ plt.show()
 
 ## 2. Installation
 
-You can install the package from [PyPI](https://pypi.python.org/pypi/densratio).
+You can install the package from [PyPI](https://pypi.org/project/densratio/).
+To install **densratio**, simply use pipenv (or pip, of course):
 
 ```:sh
-$ pip install densratio
+$ pipenv install densratio
 ```
 
 Also, you can install the package from [GitHub](https://github.com/hoxo-m/densratio_py).
 
 ```:sh
-$ pip install git+https://github.com/hoxo-m/densratio_py.git
+$ pipenv install git+https://github.com/hoxo-m/densratio_py.git
 ```
 
 The source code for **densratio** package is available on GitHub at https://github.com/hoxo-m/densratio_py.

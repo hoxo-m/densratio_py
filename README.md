@@ -29,7 +29,7 @@ estimated. When alpha is 0, this reduces to the ordinary density ratio
 `w(x)`. The alpha-relative PE-divergence and KL-divergence between
 `p(x)` and `q(x)` are also computed.
 
-![](README_files/figure-gfm/compare-true-estimate-1.png)<!-- -->
+![](https://raw.githubusercontent.com/hoxo-m/densratio_py/master/README_files/figure-gfm/compare-true-estimate-1.png)<!-- -->
 
 For example,
 
@@ -96,17 +96,18 @@ plt.show()
 ## 2\. Installation
 
 You can install the package from
-[PyPI](https://pypi.python.org/pypi/densratio).
+[PyPI](https://pypi.org/project/densratio/). To install **densratio**,
+simply use pipenv (or pip, of course):
 
 ``` :sh
-$ pip install densratio
+$ pipenv install densratio
 ```
 
 Also, you can install the package from
 [GitHub](https://github.com/hoxo-m/densratio_py).
 
 ``` :sh
-$ pip install git+https://github.com/hoxo-m/densratio_py.git
+$ pipenv install git+https://github.com/hoxo-m/densratio_py.git
 ```
 
 The source code for **densratio** package is available on GitHub at
@@ -144,7 +145,7 @@ plt.ylabel("Density Ratio")
 plt.show()
 ```
 
-![](README_files/figure-gfm/plot-estimated-density-ratio-1.png)<!-- -->
+![](https://raw.githubusercontent.com/hoxo-m/densratio_py/master/README_files/figure-gfm/plot-estimated-density-ratio-1.png)<!-- -->
 
 ### 3.2. The Method
 
@@ -283,20 +284,20 @@ levels = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4.5]
 plt.figure(figsize=(10, 4))
 plt.subplot(1, 2, 1)
 plt.contourf(range_, range_, true_alpha_density_ratio(grid).reshape(200, 200), levels)
-#> <matplotlib.contour.QuadContourSet object at 0x1a22cda0f0>
+#> <matplotlib.contour.QuadContourSet object at 0x19252e8e80>
 plt.colorbar()
-#> <matplotlib.colorbar.Colorbar object at 0x1a24bad8d0>
+#> <matplotlib.colorbar.Colorbar object at 0x1a26824a20>
 plt.title("True Alpha-Relative Density Ratio")
 plt.subplot(1, 2, 2)
 plt.contourf(range_, range_, estimated_alpha_density_ratio(grid).reshape(200, 200), levels)
-#> <matplotlib.contour.QuadContourSet object at 0x1a22ce69b0>
+#> <matplotlib.contour.QuadContourSet object at 0x1a25479d30>
 plt.colorbar()
-#> <matplotlib.colorbar.Colorbar object at 0x1a255e9a20>
+#> <matplotlib.colorbar.Colorbar object at 0x1a27e3dc88>
 plt.title("Estimated Alpha-Relative Density Ratio")
 plt.show()
 ```
 
-![](README_files/figure-gfm/compare-2d-1.png)<!-- -->
+![](https://raw.githubusercontent.com/hoxo-m/densratio_py/master/README_files/figure-gfm/compare-2d-1.png)<!-- -->
 
 ## 5\. References
 
