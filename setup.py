@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='densratio',
-    version='0.2.1',
+    version='0.2.2',
     description='A Python Package for Density Ratio Estimation',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -20,7 +20,7 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
     ],
-    keywords='density ratio, anomaly detection, change point detection, covariate shift',
+    keywords='density ratio estimation, anomaly detection, change point detection, covariate shift',
     packages=find_packages(exclude=('tests', 'docs')),
     install_requires=['numpy'],
     project_urls={

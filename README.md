@@ -96,18 +96,17 @@ plt.show()
 ## 2\. Installation
 
 You can install the package from
-[PyPI](https://pypi.org/project/densratio/). To install **densratio**,
-simply use pipenv (or pip, of course):
+[PyPI](https://pypi.org/project/densratio/). 
 
 ``` :sh
-$ pipenv install densratio
+$ pip install densratio
 ```
 
 Also, you can install the package from
 [GitHub](https://github.com/hoxo-m/densratio_py).
 
 ``` :sh
-$ pipenv install git+https://github.com/hoxo-m/densratio_py.git
+$ pip install git+https://github.com/hoxo-m/densratio_py.git
 ```
 
 The source code for **densratio** package is available on GitHub at
