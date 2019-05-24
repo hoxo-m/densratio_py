@@ -1,6 +1,4 @@
 ---
-title: "A Python Package for Density Ratio Estimation"
-author: Koji MAKIYAMA (hoxo_m), Ameya Daigavane (ameya98)
 output:
   md_document:
     variant: gfm
@@ -23,10 +21,17 @@ if (Sys.getenv("engine.path") != "") {
 }
 ```
 
+# A Python Package for Density Ratio Estimation
+
+### *Koji MAKIYAMA (hoxo-m), Ameya Daigavane (ameya98)*
+
+<!-- badges: start -->
 [![Build Status](https://travis-ci.org/hoxo-m/densratio_py.svg?branch=master)](https://travis-ci.org/hoxo-m/densratio_py)
 [![PyPI](https://img.shields.io/pypi/v/densratio.svg)](https://pypi.python.org/pypi/densratio)
 [![PyPI](https://img.shields.io/pypi/dm/densratio.svg)](https://pypi.python.org/pypi/densratio)
 [![Coverage Status](https://coveralls.io/repos/github/hoxo-m/densratio_py/badge.svg?branch=master)](https://coveralls.io/github/hoxo-m/densratio_py?branch=master)
+[![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/hoxo-m)
+<!-- badges: end -->
 
 ## 1. Overview
 
@@ -264,3 +269,8 @@ Cambridge University Press 2012.
 [4] Liu, S., Yamada, M., Collier, N., & Sugiyama, M.
 **Change-Point Detection in Time-Series Data by Relative Density-Ratio Estimation**
 Neural Networks, 2013.
+
+## 6. Related Work
+
+- densratio for R https://github.com/hoxo-m/densratio
+- pykliep https://github.com/srome/pykliep

@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='densratio',
-    version='0.2.2',
+    version='0.2.2.9000',
     description='A Python Package for Density Ratio Estimation',
     long_description=long_description,
     long_description_content_type='text/markdown',

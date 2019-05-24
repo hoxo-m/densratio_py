@@ -1,11 +1,20 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+# A Python Package for Density Ratio Estimation
+
+### *Koji MAKIYAMA (hoxo-m), Ameya Daigavane (ameya98)*
+
+<!-- badges: start -->
+
 [![Build
 Status](https://travis-ci.org/hoxo-m/densratio_py.svg?branch=master)](https://travis-ci.org/hoxo-m/densratio_py)
 [![PyPI](https://img.shields.io/pypi/v/densratio.svg)](https://pypi.python.org/pypi/densratio)
 [![PyPI](https://img.shields.io/pypi/dm/densratio.svg)](https://pypi.python.org/pypi/densratio)
 [![Coverage
 Status](https://coveralls.io/repos/github/hoxo-m/densratio_py/badge.svg?branch=master)](https://coveralls.io/github/hoxo-m/densratio_py?branch=master)
+[![Say
+Thanks\!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/hoxo-m)
+<!-- badges: end -->
 
 ## 1\. Overview
 
@@ -29,7 +38,7 @@ estimated. When alpha is 0, this reduces to the ordinary density ratio
 `w(x)`. The alpha-relative PE-divergence and KL-divergence between
 `p(x)` and `q(x)` are also computed.
 
-![](https://raw.githubusercontent.com/hoxo-m/densratio_py/master/README_files/figure-gfm/compare-true-estimate-1.png)<!-- -->
+![](README_files/figure-gfm/compare-true-estimate-1.png)<!-- -->
 
 For example,
 
@@ -96,7 +105,7 @@ plt.show()
 ## 2\. Installation
 
 You can install the package from
-[PyPI](https://pypi.org/project/densratio/). 
+[PyPI](https://pypi.org/project/densratio/).
 
 ``` :sh
 $ pip install densratio
@@ -144,7 +153,7 @@ plt.ylabel("Density Ratio")
 plt.show()
 ```
 
-![](https://raw.githubusercontent.com/hoxo-m/densratio_py/master/README_files/figure-gfm/plot-estimated-density-ratio-1.png)<!-- -->
+![](README_files/figure-gfm/plot-estimated-density-ratio-1.png)<!-- -->
 
 ### 3.2. The Method
 
@@ -283,20 +292,20 @@ levels = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4.5]
 plt.figure(figsize=(10, 4))
 plt.subplot(1, 2, 1)
 plt.contourf(range_, range_, true_alpha_density_ratio(grid).reshape(200, 200), levels)
-#> <matplotlib.contour.QuadContourSet object at 0x19252e8e80>
+#> <matplotlib.contour.QuadContourSet object at 0x1a2067f470>
 plt.colorbar()
-#> <matplotlib.colorbar.Colorbar object at 0x1a26824a20>
+#> <matplotlib.colorbar.Colorbar object at 0x1a22fb04e0>
 plt.title("True Alpha-Relative Density Ratio")
 plt.subplot(1, 2, 2)
 plt.contourf(range_, range_, estimated_alpha_density_ratio(grid).reshape(200, 200), levels)
-#> <matplotlib.contour.QuadContourSet object at 0x1a25479d30>
+#> <matplotlib.contour.QuadContourSet object at 0x1a20643550>
 plt.colorbar()
-#> <matplotlib.colorbar.Colorbar object at 0x1a27e3dc88>
+#> <matplotlib.colorbar.Colorbar object at 0x1a232486a0>
 plt.title("Estimated Alpha-Relative Density Ratio")
 plt.show()
 ```
 
-![](https://raw.githubusercontent.com/hoxo-m/densratio_py/master/README_files/figure-gfm/compare-2d-1.png)<!-- -->
+![](README_files/figure-gfm/compare-2d-1.png)<!-- -->
 
 ## 5\. References
 
@@ -314,3 +323,8 @@ in Machine Learning.** Cambridge University Press 2012.
 \[4\] Liu, S., Yamada, M., Collier, N., & Sugiyama, M. **Change-Point
 Detection in Time-Series Data by Relative Density-Ratio Estimation**
 Neural Networks, 2013.
+
+## 6\. Related Work
+
+  - densratio for R <https://github.com/hoxo-m/densratio>
+  - pykliep <https://github.com/srome/pykliep>
