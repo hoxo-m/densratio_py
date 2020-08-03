@@ -13,6 +13,7 @@ References:
 from numpy import array, asarray, asmatrix, diag, empty, exp, inf, log, matrix, multiply, ones, power, sum
 from numpy.random import randint
 from numpy.linalg import solve
+from warnings import warn
 from .density_ratio import DensityRatio, KernelInfo
 from .helpers import guvectorize_compute, np_float, to_numpy_matrix
 
@@ -210,3 +211,15 @@ _compute_function = _compute_functions['cpu' if 'cpu' in _compute_functions else
 # Returns a 2D numpy matrix of kernel evaluated at the gridpoints with coordinates from x_list and y_list.
 def compute_kernel_Gaussian(x_list, y_list, sigma):
     return _compute_function(x_list, y_list, -.5 * sigma ** -2).T
+
+
+def set_compute_kernel_target(target: str) -> None:
+    global _compute_function
+    if target not in ('numpy', 'cpu', 'parallel'):
+        raise ValueError('\'target\' must be one of the following: \'numpy\', \'cpu\', or \'parallel\'.')
+
+    if target not in _compute_functions:
+        warn('\'numba\' not available; defaulting to \'numpy\'.', ImportWarning)
+        target = 'numpy'
+
+    _compute_function = _compute_functions[target]
