@@ -10,11 +10,11 @@ References:
         Journal of Machine Learning Research 10 (2009) 1391-1445.
 """
 
-from numpy import inf, array, exp, matrix, diag, multiply, ones, asarray, log
+from numpy import array, asarray, asmatrix, diag, empty, exp, inf, log, matrix, multiply, ones, power, sum
 from numpy.random import randint
-from numpy.linalg import norm, solve
+from numpy.linalg import solve
 from .density_ratio import DensityRatio, KernelInfo
-from .helpers import to_numpy_matrix
+from .helpers import guvectorize_compute, np_float, to_numpy_matrix
 
 
 def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True):
@@ -182,13 +182,31 @@ def search_sigma_and_lambda(x, y, alpha, centers, sigma_range, lambda_range, ver
     return {"sigma": sigma_new, "lambda": lambda_new}
 
 
+def _compute_kernel_Gaussian(x_list, y_row, neg_gamma, res) -> None:
+    sq_norm = sum(power(x_list - y_row, 2), 1)
+    multiply(neg_gamma, sq_norm, res)
+    exp(res, res)
+
+
+def _target_numpy_wrapper(x_list, y_list, neg_gamma):
+    res = empty((y_list.shape[0], x_list.shape[0]), np_float)
+    if isinstance(x_list, matrix) or isinstance(y_list, matrix):
+        res = asmatrix(res)
+
+    for j, y_row in enumerate(y_list):
+        # `.T` aligns shapes for matrices, does nothing for 1D ndarray.
+        _compute_kernel_Gaussian(x_list, y_row, neg_gamma, res[j].T)
+
+    return res
+
+
+_compute_functions = {'numpy': _target_numpy_wrapper}
+if guvectorize_compute:
+    _compute_functions.update({key: guvectorize_compute(key)(_compute_kernel_Gaussian) for key in ('cpu', 'parallel')})
+
+_compute_function = _compute_functions['cpu' if 'cpu' in _compute_functions else 'numpy']
+
+
 # Returns a 2D numpy matrix of kernel evaluated at the gridpoints with coordinates from x_list and y_list.
 def compute_kernel_Gaussian(x_list, y_list, sigma):
-    result = [[kernel_Gaussian(x, y, sigma) for y in y_list] for x in x_list]
-    result = matrix(result)
-    return result
-
-
-# Returns the Gaussian kernel evaluated at (x, y) with parameter sigma.
-def kernel_Gaussian(x, y, sigma):
-    return exp(- (norm(x - y) ** 2) / (2 * sigma * sigma))
+    return _compute_function(x_list, y_list, -.5 * sigma ** -2).T
