@@ -1,6 +1,22 @@
 # -*- coding: utf-8 -*-
 
-from numpy import array, matrix, ndarray
+from numpy import array, matrix, ndarray, result_type
+
+
+np_float = result_type(float)
+try:
+    import numba as nb
+except ModuleNotFoundError:
+    guvectorize_compute = None
+else:
+    _nb_float = nb.from_dtype(np_float)
+
+    def guvectorize_compute(target: str, *, cache: bool = True):
+        return nb.guvectorize([nb.void(_nb_float[:, :], _nb_float[:], _nb_float, _nb_float[:])],
+                              '(m, p),(p),()->(m)',
+                              nopython=True,
+                              target=target,
+                              cache=cache)
 
 
 def is_numeric(x):
