@@ -1,9 +1,8 @@
+A Python Package for Density Ratio Estimation
+================
+Koji Makiyama (@hoxo-m) and Ameya Daigavane (@ameya98)
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
-# A Python Package for Density Ratio Estimation
-
-### *Koji MAKIYAMA (hoxo-m), Ameya Daigavane (ameya98)*
-
 <!-- badges: start -->
 
 [![Build
@@ -12,11 +11,9 @@ Status](https://travis-ci.org/hoxo-m/densratio_py.svg?branch=master)](https://tr
 [![PyPI](https://img.shields.io/pypi/dm/densratio.svg)](https://pypi.python.org/pypi/densratio)
 [![Coverage
 Status](https://coveralls.io/repos/github/hoxo-m/densratio_py/badge.svg?branch=master)](https://coveralls.io/github/hoxo-m/densratio_py?branch=master)
-[![Say
-Thanks\!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/hoxo-m)
 <!-- badges: end -->
 
-## 1\. Overview
+## 1. Overview
 
 **Density ratio estimation** is described as follows: for given two data
 samples `x1` and `x2` from unknown distributions `p(x)` and `q(x)`
@@ -26,17 +23,17 @@ d-dimensional real numbers.
 The estimated density ratio function `w(x)` can be used in many
 applications such as the inlier-based outlier detection \[1\] and
 covariate shift adaptation \[2\]. Other useful applications for density
-ratio estimation were summarized by Sugiyama et al. (2012) in \[3\].
+ratio estimation were summarized by Sugiyama et al. (2012) in \[3\].
 
 The package **densratio** provides a function `densratio()` that returns
 an object with a method to estimate density ratio as
 `compute_density_ratio()`.
 
-Further, the alpha-relative density ratio `p(x)/(alpha * p(x) + (1 -
-alpha) * q(x))` (where alpha is in the range \[0, 1\]) can also be
-estimated. When alpha is 0, this reduces to the ordinary density ratio
-`w(x)`. The alpha-relative PE-divergence and KL-divergence between
-`p(x)` and `q(x)` are also computed.
+Further, the alpha-relative density ratio
+`p(x)/(alpha * p(x) + (1 - alpha) * q(x))` (where alpha is in the range
+\[0, 1\]) can also be estimated. When alpha is 0, this reduces to the
+ordinary density ratio `w(x)`. The alpha-relative PE-divergence and
+KL-divergence between `p(x)` and `q(x)` are also computed.
 
 ![](README_files/figure-gfm/compare-true-estimate-1.png)<!-- -->
 
@@ -102,7 +99,7 @@ plt.legend()
 plt.show()
 ```
 
-## 2\. Installation
+## 2. Installation
 
 You can install the package from
 [PyPI](https://pypi.org/project/densratio/).
@@ -121,7 +118,7 @@ $ pip install git+https://github.com/hoxo-m/densratio_py.git
 The source code for **densratio** package is available on GitHub at
 <https://github.com/hoxo-m/densratio_py>.
 
-## 3\. Details
+## 3. Details
 
 ### 3.1. Basics
 
@@ -153,7 +150,7 @@ plt.ylabel("Density Ratio")
 plt.show()
 ```
 
-![](README_files/figure-gfm/plot-estimated-density-ratio-1.png)<!-- -->
+![](README_files/figure-gfm/plot-estimated-density-ratio-3.png)<!-- -->
 
 ### 3.2. The Method
 
@@ -162,7 +159,7 @@ The package estimates density ratio by the RuLSIF method.
 **RuLSIF** (Relative unconstrained Least-Squares Importance Fitting)
 estimates the alpha-relative density ratio by minimizing the squared
 loss between the true and estimated alpha-relative ratios. You can find
-more information in Hido et al. (2011) \[1\] and Liu et al (2013) \[4\].
+more information in Hido et al. (2011) \[1\] and Liu et al (2013) \[4\].
 
 The method assumes that the alpha-relative density ratio is represented
 by a linear kernel model:
@@ -198,7 +195,7 @@ compute the alpha-relative density ratio at the passed coordinates.
     #> 
     #> Regularization Parameter (lambda): 1.0
     #> 
-    #> Alpha-Relative PE-Divergence: 0.9635169300831035
+    #> Alpha-Relative PE-Divergence: 0.9635169300831037
     #> 
     #> Alpha-Relative KL-Divergence: 0.8388266265473269
     #> 
@@ -206,26 +203,26 @@ compute the alpha-relative density ratio at the passed coordinates.
     #>   compute_density_ratio(x)
     #> 
 
-  - **Method** is fixed as RuLSIF.
-  - **Kernel type** is fixed as Gaussian RBF.
-  - **Number of kernels** is the number of kernels in the linear model.
+-   **Method** is fixed as RuLSIF.
+-   **Kernel type** is fixed as Gaussian RBF.
+-   **Number of kernels** is the number of kernels in the linear model.
     You can change by setting `kernel_num` parameter. In default,
     `kernel_num = 100`.
-  - **Bandwidth(sigma)** is the Gaussian kernel bandwidth. In default,
+-   **Bandwidth(sigma)** is the Gaussian kernel bandwidth. In default,
     `sigma = "auto"`, the algorithm automatically select an optimal
     value by cross validation. If you set `sigma` a number, that will be
     used. If you set `sigma` a numeric array, the algorithm select an
     optimal value in them by cross validation.
-  - **Centers** are centers of Gaussian kernels in the linear model.
+-   **Centers** are centers of Gaussian kernels in the linear model.
     These are selected at random from the data sample `x` underlying a
     numerator distribution `p(x)`. You can find the whole values in
     `result.kernel_info.centers`.
-  - **Kernel weights(theta)** are theta parameters in the linear kernel
+-   **Kernel weights(theta)** are theta parameters in the linear kernel
     model. You can find these values in `result.theta`.
-  - **The function to estimate the alpha-relative density ratio** is
+-   **The function to estimate the alpha-relative density ratio** is
     named `compute_density_ratio()`.
 
-## 4\. Multi Dimensional Data Samples
+## 4. Multi Dimensional Data Samples
 
 So far, we have deal with one-dimensional data samples `x` and `y`.
 `densratio()` allows to input multidimensional data samples as
@@ -265,7 +262,7 @@ gives the following output:
     #> 
     #> Alpha-Relative PE-Divergence: 0.653615870855595
     #> 
-    #> Alpha-Relative KL-Divergence: 0.6214285743087549
+    #> Alpha-Relative KL-Divergence: 0.6214285743087544
     #> 
     #> Function to Estimate Density Ratio:
     #>   compute_density_ratio(x)
@@ -292,22 +289,22 @@ levels = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4.5]
 plt.figure(figsize=(10, 4))
 plt.subplot(1, 2, 1)
 plt.contourf(range_, range_, true_alpha_density_ratio(grid).reshape(200, 200), levels)
-#> <matplotlib.contour.QuadContourSet object at 0x1a2067f470>
+#> <matplotlib.contour.QuadContourSet object at 0x000001E3CC6AD8D0>
 plt.colorbar()
-#> <matplotlib.colorbar.Colorbar object at 0x1a22fb04e0>
+#> <matplotlib.colorbar.Colorbar object at 0x000001E3CC7343D0>
 plt.title("True Alpha-Relative Density Ratio")
 plt.subplot(1, 2, 2)
 plt.contourf(range_, range_, estimated_alpha_density_ratio(grid).reshape(200, 200), levels)
-#> <matplotlib.contour.QuadContourSet object at 0x1a20643550>
+#> <matplotlib.contour.QuadContourSet object at 0x000001E3CC74B400>
 plt.colorbar()
-#> <matplotlib.colorbar.Colorbar object at 0x1a232486a0>
+#> <matplotlib.colorbar.Colorbar object at 0x000001E3CC79AF20>
 plt.title("Estimated Alpha-Relative Density Ratio")
 plt.show()
 ```
 
-![](README_files/figure-gfm/compare-2d-1.png)<!-- -->
+![](README_files/figure-gfm/compare-2d-5.png)<!-- -->
 
-## 5\. References
+## 5. References
 
 \[1\] Hido, S., Tsuboi, Y., Kashima, H., Sugiyama, M., & Kanamori, T.
 **Statistical outlier detection using direct density ratio estimation.**
@@ -324,7 +321,7 @@ in Machine Learning.** Cambridge University Press 2012.
 Detection in Time-Series Data by Relative Density-Ratio Estimation**
 Neural Networks, 2013.
 
-## 6\. Related Work
+## 6. Related Work
 
-  - densratio for R <https://github.com/hoxo-m/densratio>
-  - pykliep <https://github.com/srome/pykliep>
+-   densratio for R <https://github.com/hoxo-m/densratio>
+-   pykliep <https://github.com/srome/pykliep>

@@ -1,9 +1,7 @@
 ---
-output:
-  md_document:
-    variant: gfm
-  html_document:
-    keep_md: false
+title: A Python Package for Density Ratio Estimation
+author: Koji Makiyama (@hoxo-m) and Ameya Daigavane (@ameya98)
+output: github_document
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -21,16 +19,11 @@ if (Sys.getenv("engine.path") != "") {
 }
 ```
 
-# A Python Package for Density Ratio Estimation
-
-### *Koji MAKIYAMA (hoxo-m), Ameya Daigavane (ameya98)*
-
 <!-- badges: start -->
 [![Build Status](https://travis-ci.org/hoxo-m/densratio_py.svg?branch=master)](https://travis-ci.org/hoxo-m/densratio_py)
 [![PyPI](https://img.shields.io/pypi/v/densratio.svg)](https://pypi.python.org/pypi/densratio)
 [![PyPI](https://img.shields.io/pypi/dm/densratio.svg)](https://pypi.python.org/pypi/densratio)
 [![Coverage Status](https://coveralls.io/repos/github/hoxo-m/densratio_py/badge.svg?branch=master)](https://coveralls.io/github/hoxo-m/densratio_py?branch=master)
-[![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/hoxo-m)
 <!-- badges: end -->
 
 ## 1. Overview
@@ -44,7 +37,12 @@ The package **densratio** provides a function `densratio()` that returns an obje
 
 Further, the alpha-relative density ratio `p(x)/(alpha * p(x) + (1 - alpha) * q(x))` (where alpha is in the range [0, 1]) can also be estimated.
 When alpha is 0, this reduces to the ordinary density ratio `w(x)`.
-The alpha-relative PE-divergence and KL-divergence  between `p(x)` and `q(x)` are also computed.
+The alpha-relative PE-divergence and KL-divergence between `p(x)` and `q(x)` are also computed.
+
+```{python dummy-plot, echo=FALSE}
+from matplotlib import pyplot as plt
+plt.show()
+```
 
 ```{python compare-true-estimate, echo=FALSE}
 import numpy as np
