@@ -1,6 +1,6 @@
 ---
 title: A Python Package for Density Ratio Estimation
-author: Koji Makiyama (@hoxo-m) and Ameya Daigavane (@ameya98)
+author: Koji Makiyama (@hoxo-m), Ameya Daigavane (@ameya98), and Krzysztof Mierzejewski (@mierzejk)
 output: github_document
 ---
 

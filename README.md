@@ -1,6 +1,7 @@
 A Python Package for Density Ratio Estimation
 ================
-Koji Makiyama (@hoxo-m) and Ameya Daigavane (@ameya98)
+Koji Makiyama (@hoxo-m), Ameya Daigavane (@ameya98), and Krzysztof
+Mierzejewski (@mierzejk)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- badges: start -->
@@ -69,9 +70,9 @@ gives the following output:
     #> 
     #> Regularization Parameter (lambda): 0.1
     #> 
-    #> Alpha-Relative PE-Divergence: 0.6187941335987046
+    #> Alpha-Relative PE-Divergence: 0.618794133598705
     #> 
-    #> Alpha-Relative KL-Divergence: 0.7037648129307482
+    #> Alpha-Relative KL-Divergence: 0.7037648129307483
     #> 
     #> Function to Estimate Density Ratio:
     #>   compute_density_ratio(x)
@@ -195,9 +196,9 @@ compute the alpha-relative density ratio at the passed coordinates.
     #> 
     #> Regularization Parameter (lambda): 1.0
     #> 
-    #> Alpha-Relative PE-Divergence: 0.9635169300831037
+    #> Alpha-Relative PE-Divergence: 0.9635169300831041
     #> 
-    #> Alpha-Relative KL-Divergence: 0.8388266265473269
+    #> Alpha-Relative KL-Divergence: 0.838826626547327
     #> 
     #> Function to Estimate Density Ratio:
     #>   compute_density_ratio(x)
@@ -262,7 +263,7 @@ gives the following output:
     #> 
     #> Alpha-Relative PE-Divergence: 0.653615870855595
     #> 
-    #> Alpha-Relative KL-Divergence: 0.6214285743087544
+    #> Alpha-Relative KL-Divergence: 0.6214285743087565
     #> 
     #> Function to Estimate Density Ratio:
     #>   compute_density_ratio(x)
@@ -289,15 +290,15 @@ levels = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4.5]
 plt.figure(figsize=(10, 4))
 plt.subplot(1, 2, 1)
 plt.contourf(range_, range_, true_alpha_density_ratio(grid).reshape(200, 200), levels)
-#> <matplotlib.contour.QuadContourSet object at 0x000001E3CC6AD8D0>
+#> <matplotlib.contour.QuadContourSet object at 0x000001C0C05E5870>
 plt.colorbar()
-#> <matplotlib.colorbar.Colorbar object at 0x000001E3CC7343D0>
+#> <matplotlib.colorbar.Colorbar object at 0x000001C0C0607010>
 plt.title("True Alpha-Relative Density Ratio")
 plt.subplot(1, 2, 2)
 plt.contourf(range_, range_, estimated_alpha_density_ratio(grid).reshape(200, 200), levels)
-#> <matplotlib.contour.QuadContourSet object at 0x000001E3CC74B400>
+#> <matplotlib.contour.QuadContourSet object at 0x000001C0C0541690>
 plt.colorbar()
-#> <matplotlib.colorbar.Colorbar object at 0x000001E3CC79AF20>
+#> <matplotlib.colorbar.Colorbar object at 0x000001C0C1352FE0>
 plt.title("Estimated Alpha-Relative Density Ratio")
 plt.show()
 ```
