@@ -9,7 +9,7 @@ Estimate Density Ratio p(x)/q(y)
 
 from numpy import linspace
 from .RuLSIF import RuLSIF
-from .helpers import to_numpy_matrix
+from .helpers import to_ndarray
 
 
 def densratio(x, y, alpha=0, sigma_range="auto", lambda_range="auto", kernel_num=100, verbose=True):
@@ -45,8 +45,8 @@ def densratio(x, y, alpha=0, sigma_range="auto", lambda_range="auto", kernel_num
       >>> print(density_ratio)
     """
 
-    x = to_numpy_matrix(x)
-    y = to_numpy_matrix(y)
+    x = to_ndarray(x)
+    y = to_ndarray(y)
 
     if x.shape[1] != y.shape[1]:
         raise ValueError("x and y must be same dimensions.")

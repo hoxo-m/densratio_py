@@ -23,17 +23,15 @@ def is_numeric(x):
     return isinstance(x, int) or isinstance(x, float)
 
 
-def to_numpy_matrix(x):
-    if isinstance(x, matrix):
-        return x
-    elif isinstance(x, ndarray):
+def to_ndarray(x):
+    if isinstance(x, ndarray):
         if len(x.shape) == 1:
-            return matrix(x).T
+            return x.reshape(-1, 1)
         else:
-            return matrix(x)
+            return x
     elif str(type(x)) == "<class 'pandas.core.frame.DataFrame'>":
-        return x.as_matrix()
+        return x.values
     elif not x:
         raise ValueError("Cannot transform to numpy.matrix.")
     else:
-        return to_numpy_matrix(array(x))
+        return to_ndarray(array(x))

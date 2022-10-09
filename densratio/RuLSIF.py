@@ -10,12 +10,12 @@ References:
         Journal of Machine Learning Research 10 (2009) 1391-1445.
 """
 
-from numpy import array, asarray, asmatrix, diag, empty, exp, inf, log, matrix, multiply, ones, power, sum
+from numpy import array, asarray, asmatrix, diag, diagflat, empty, exp, inf, log, matrix, multiply, ones, power, sum
 from numpy.random import randint
 from numpy.linalg import solve
 from warnings import warn
 from .density_ratio import DensityRatio, KernelInfo
-from .helpers import guvectorize_compute, np_float, to_numpy_matrix
+from .helpers import guvectorize_compute, np_float, to_ndarray
 
 
 def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True):
@@ -81,35 +81,35 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
     # Compute the alpha-relative density ratio, at the given coordinates.
     def alpha_density_ratio(coordinates):
         # Evaluate the kernel at these coordinates, and take the dot-product with the weights.
-        coordinates = to_numpy_matrix(coordinates)
+        coordinates = to_ndarray(coordinates)
         phi_x = compute_kernel_Gaussian(coordinates, centers, sigma)
-        alpha_density_ratio = asarray(phi_x.dot(matrix(theta).T)).ravel()
+        alpha_density_ratio = phi_x @ theta
 
         return alpha_density_ratio
 
     # Compute the approximate alpha-relative PE-divergence, given samples x and y from the respective distributions.
     def alpha_PE_divergence(x, y):
         # This is Y, in Reference 1.
-        x = to_numpy_matrix(x)
+        x = to_ndarray(x)
 
         # Obtain alpha-relative density ratio at these points.
         g_x = alpha_density_ratio(x)
 
         # This is Y', in Reference 1.
-        y = to_numpy_matrix(y)
+        y = to_ndarray(y)
 
         # Obtain alpha-relative density ratio at these points.
         g_y = alpha_density_ratio(y)
 
         # Compute the alpha-relative PE-divergence as given in Reference 1.
         n = x.shape[0]
-        divergence = (-alpha*(g_x.T.dot(g_x))/2 - (1-alpha)*(g_y.T.dot(g_y))/2 + g_x.sum(axis=0))/n - 1./2
+        divergence = (-alpha * (g_x @ g_x)/2 - (1 - alpha) * (g_y @ g_y)/2 + g_x.sum(axis=0))/n - 1./2
         return divergence
 
     # Compute the approximate alpha-relative KL-divergence, given samples x and y from the respective distributions.
     def alpha_KL_divergence(x, y):
         # This is Y, in Reference 1.
-        x = to_numpy_matrix(x)
+        x = to_ndarray(x)
 
         # Obtain alpha-relative density ratio at these points.
         g_x = alpha_density_ratio(x)
@@ -149,28 +149,28 @@ def search_sigma_and_lambda(x, y, alpha, centers, sigma_range, lambda_range, ver
 
     for sigma in sigma_range:
 
-        phi_x = compute_kernel_Gaussian(x, centers, sigma)
-        phi_y = compute_kernel_Gaussian(y, centers, sigma)
-        H = alpha * (phi_x.T.dot(phi_x) / nx) + (1 - alpha) * (phi_y.T.dot(phi_y) / ny)
-        h = phi_x.mean(axis=0).T
-        phi_x = phi_x[:n_min].T
-        phi_y = phi_y[:n_min].T
+        phi_x = compute_kernel_Gaussian(x, centers, sigma)  # (nx, kernel_num)
+        phi_y = compute_kernel_Gaussian(y, centers, sigma)  # (ny, kernel_num)
+        H = alpha * (phi_x.T @ phi_x / nx) + (1 - alpha) * (phi_y.T @ phi_y / ny)  # (kernel_num, kernel_num)
+        h = phi_x.mean(axis=0).reshape(-1, 1)  # (kernel_num, 1)
+        phi_x = phi_x[:n_min].T  # (kernel_num, n_min)
+        phi_y = phi_y[:n_min].T  # (kernel_num, n_min)
 
         for lambda_ in lambda_range:
-            B = H + diag(array(lambda_ * (ny - 1) / ny).repeat(kernel_num))
-            B_inv_X = solve(B, phi_y)
-            X_B_inv_X = multiply(phi_y, B_inv_X)
-            denom = (ny * ones(n_min) - ones(kernel_num).dot(X_B_inv_X)).A1
-            B0 = solve(B, h.dot(matrix(ones(n_min)))) + B_inv_X.dot(diag(h.T.dot(B_inv_X).A1 / denom))
-            B1 = solve(B, phi_x) + B_inv_X.dot(diag(ones(kernel_num).dot(multiply(phi_x, B_inv_X)).A1))
-            B2 = (ny - 1) * (nx * B0 - B1) / (ny * (nx - 1))
+            B = H + diag(array(lambda_ * (ny - 1) / ny).repeat(kernel_num))  # (kernel_num, kernel_num)
+            B_inv_X = solve(B, phi_y)  # (kernel_num, n_min)
+            X_B_inv_X = multiply(phi_y, B_inv_X)  # (kernel_num, n_min)
+            denom = ny * ones(n_min) - ones(kernel_num) @ X_B_inv_X  # (n_min, )
+            B0 = solve(B, h @ ones((1, n_min))) + B_inv_X @ diagflat(h.T @ B_inv_X / denom)  # (kernel_num, n_min)
+            B1 = solve(B, phi_x) + B_inv_X @ diagflat(ones(kernel_num) @ multiply(phi_x, B_inv_X))  # (kernel_num, n_min)
+            B2 = (ny - 1) * (nx * B0 - B1) / (ny * (nx - 1))  # (kernel_num, n_min)
             B2[B2 < 0] = 0
-            r_y = multiply(phi_y, B2).sum(axis=0).T
-            r_x = multiply(phi_x, B2).sum(axis=0).T
+            r_y = multiply(phi_y, B2).sum(axis=0).T  # (n_min, )
+            r_x = multiply(phi_x, B2).sum(axis=0).T  # (n_min, )
 
             # Squared loss of RuLSIF, without regularization term.
             # Directly related to the negative of the PE-divergence.
-            score = (r_y.T.dot(r_y).A1 / 2 - r_x.sum(axis=0)) / n_min
+            score = (r_y @ r_y / 2 - r_x.sum(axis=0)) / n_min
 
             if verbose:
                 print("sigma = %.5f, lambda = %.5f, score = %.5f" % (sigma, lambda_, score))

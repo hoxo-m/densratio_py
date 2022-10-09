@@ -63,7 +63,7 @@ gives the following output:
     #>   Kernel type: Gaussian
     #>   Number of kernels: 100
     #>   Bandwidth(sigma): 0.1
-    #>   Centers: matrix([[-0.09591373],..
+    #>   Centers: array([[-0.09591373],..
     #> 
     #> Kernel Weights (theta):
     #>   array([0.04990797, 0.0550548 , 0.04784736, 0.04951904, 0.04840418,..
@@ -189,7 +189,7 @@ compute the alpha-relative density ratio at the passed coordinates.
     #>   Kernel type: Gaussian
     #>   Number of kernels: 100
     #>   Bandwidth(sigma): 0.1
-    #>   Centers: matrix([[0.92113356],..
+    #>   Centers: array([[0.92113356],..
     #> 
     #> Kernel Weights (theta):
     #>   array([0.08848922, 0.03377533, 0.0753727 , 0.06141277, 0.02543963,..
@@ -254,7 +254,7 @@ gives the following output:
     #>   Kernel type: Gaussian
     #>   Number of kernels: 100
     #>   Bandwidth(sigma): 0.3
-    #>   Centers: matrix([[1.01477443, 1.38864061],..
+    #>   Centers: array([[1.01477443, 1.38864061],..
     #> 
     #> Kernel Weights (theta):
     #>   array([0.06151164, 0.08012094, 0.10467369, 0.13868176, 0.14917063,..
@@ -290,15 +290,15 @@ levels = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4.5]
 plt.figure(figsize=(10, 4))
 plt.subplot(1, 2, 1)
 plt.contourf(range_, range_, true_alpha_density_ratio(grid).reshape(200, 200), levels)
-#> <matplotlib.contour.QuadContourSet object at 0x000001C0C05E5870>
+#> <matplotlib.contour.QuadContourSet object at 0x0000022E950202E0>
 plt.colorbar()
-#> <matplotlib.colorbar.Colorbar object at 0x000001C0C0607010>
+#> <matplotlib.colorbar.Colorbar object at 0x0000022E9500DA80>
 plt.title("True Alpha-Relative Density Ratio")
 plt.subplot(1, 2, 2)
 plt.contourf(range_, range_, estimated_alpha_density_ratio(grid).reshape(200, 200), levels)
-#> <matplotlib.contour.QuadContourSet object at 0x000001C0C0541690>
+#> <matplotlib.contour.QuadContourSet object at 0x0000022E942C8EE0>
 plt.colorbar()
-#> <matplotlib.colorbar.Colorbar object at 0x000001C0C1352FE0>
+#> <matplotlib.colorbar.Colorbar object at 0x0000022E95095150>
 plt.title("Estimated Alpha-Relative Density Ratio")
 plt.show()
 ```
