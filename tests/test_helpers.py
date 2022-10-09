@@ -18,35 +18,35 @@ class BasicTestSuite(unittest.TestCase):
         self.assertTrue(helpers.is_numeric(y))
         self.assertFalse(helpers.is_numeric(z))
 
-    def test_to_numpy_matrix_list(self):
+    def test_to_ndarray_list(self):
         x = [1,2,3]
-        x = helpers.to_numpy_matrix(x)
-        assert_array_equal(x, matrix([1,2,3]).T)
+        x = helpers.to_ndarray(x)
+        assert_array_equal(x, array([1,2,3]).reshape(-1, 1))
 
-    def test_to_numpy_matrix_list2(self):
+    def test_to_ndarray_list2(self):
         x = [[1,2],[3,4]]
-        x = helpers.to_numpy_matrix(x)
-        assert_array_equal(x, matrix([[1,2],[3,4]]))
+        x = helpers.to_ndarray(x)
+        assert_array_equal(x, array([[1,2],[3,4]]))
 
-    def test_to_numpy_matrix_ndarray(self):
+    def test_to_ndarray_ndarray(self):
         x = array([1,2,3])
-        x = helpers.to_numpy_matrix(x)
-        assert_array_equal(x, matrix([1,2,3]).T)
+        x = helpers.to_ndarray(x)
+        assert_array_equal(x, array([1,2,3]).reshape(-1, 1))
 
-    def test_to_numpy_matrix_ndarray2(self):
+    def test_to_ndarray_ndarray2(self):
         x = array([[1,2],[3,4]])
-        x = helpers.to_numpy_matrix(x)
-        assert_array_equal(x, matrix([[1,2],[3,4]]))
+        x = helpers.to_ndarray(x)
+        assert_array_equal(x, array([[1,2],[3,4]]))
 
-    def test_to_numpy_matrix_matrix(self):
-        x = matrix([[1,2],[3,4]])
-        x = helpers.to_numpy_matrix(x)
-        assert_array_equal(x, matrix([[1,2],[3,4]]))
+    # def test_to_ndarray_matrix(self):
+    #     x = matrix([[1,2],[3,4]])
+    #     x = helpers.to_ndarray(x)
+    #     assert_array_equal(x, array([[1,2],[3,4]]))
 
-    def test_to_numpy_matrix_pandas_DataFrame(self):
+    def test_to_ndarray_pandas_DataFrame(self):
         x = DataFrame([[1,2],[3,4]])
-        x = helpers.to_numpy_matrix(x)
-        assert_array_equal(x, matrix([[1,2],[3,4]]))
+        x = helpers.to_ndarray(x)
+        assert_array_equal(x, array([[1,2],[3,4]]))
 
 if __name__ == '__main__':
     unittest.main()
