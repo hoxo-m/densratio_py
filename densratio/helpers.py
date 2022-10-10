@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from numpy import array, matrix, ndarray, result_type
 
 

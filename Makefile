@@ -2,7 +2,7 @@ init:
 	pip install -r requirements.txt
 
 test:
-	nosetests
+	pytest
 
 docs:
 	cd docs && make html

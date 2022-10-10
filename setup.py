@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from setuptools import setup, find_packages
 
 with open("README.md", "r") as fh:
@@ -7,17 +5,17 @@ with open("README.md", "r") as fh:
 
 setup(
     name='densratio',
-    version='0.2.2.9000',
+    version='0.3.0',
     description='A Python Package for Density Ratio Estimation',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/hoxo-m/densratio_py',
-    author='Koji Makiyama, Ameya Daigavane',
+    author='Koji Makiyama, Ameya Daigavane, Krzysztof Mierzejewski',
     author_email='hoxo.smile@gmail.com',
     classifiers=[
         'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
     ],
     keywords='density ratio estimation, anomaly detection, change point detection, covariate shift',
@@ -25,7 +23,6 @@ setup(
     install_requires=['numpy'],
     project_urls={
         'Bug Reports': 'https://github.com/hoxo-m/densratio_py/issues',
-        'Say Thanks!': 'https://saythanks.io/to/hoxo-m',
         'Source': 'https://github.com/hoxo-m/densratio_py',
     },
     license="MIT + file LICENSE",

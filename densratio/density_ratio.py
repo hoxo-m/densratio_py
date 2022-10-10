@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from pprint import pformat
 from re import sub
 
