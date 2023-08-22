@@ -10,12 +10,11 @@ References:
         Journal of Machine Learning Research 10 (2009) 1391-1445.
 """
 
-from numpy import array, asarray, asmatrix, diag, diagflat, empty, exp, inf, log, matrix, multiply, ones, power, sum
-from numpy.random import randint
+from numpy import array, asarray, asmatrix, diag, diagflat, empty, exp, inf, log, matrix, multiply, ones, power, ravel, sum
 from numpy.linalg import solve
 from warnings import warn
 from .density_ratio import DensityRatio, KernelInfo
-from .helpers import guvectorize_compute, np_float, to_ndarray
+from .helpers import guvectorize_compute, np_float, semi_stratified_sample, to_ndarray
 
 
 def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True):
@@ -46,7 +45,8 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
     kernel_num = min(kernel_num, nx)
 
     # Randomly take a subset of x, to identify centers for the kernels.
-    centers = x[randint(nx, size=kernel_num)]
+    x_array = (ravel if 1 == x.shape[1] else asarray)(x)
+    centers = x[semi_stratified_sample(x_array, kernel_num)]
 
     if verbose:
         print("RuLSIF starting...")
