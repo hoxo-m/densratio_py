@@ -16,6 +16,7 @@ from numpy.linalg import solve
 from warnings import warn
 from .density_ratio import DensityRatio, KernelInfo
 from .helpers import guvectorize_compute, np_float, to_ndarray
+from .helpers import alpha_normalize as static_alpha_normalize
 
 
 def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True):
@@ -87,6 +88,21 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
 
         return alpha_density_ratio
 
+    def alpha_normalize(values: array) -> array:
+        """
+        Normalizes values less than 1 so the minimum value to replace 0 is symmetrical to alpha^-1
+        with respect to the natural logarithm.
+
+        Arguments:
+            values (numpy.array): A vector to normalize.
+
+        Returns:
+            Normalized numpy.array object that preserves the order and the number of unique input argument values.
+        """
+
+        return static_alpha_normalize(values, alpha)
+
+
     # Compute the approximate alpha-relative PE-divergence, given samples x and y from the respective distributions.
     def alpha_PE_divergence(x, y):
         # This is Y, in Reference 1.
@@ -112,11 +128,11 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
         x = to_ndarray(x)
 
         # Obtain alpha-relative density ratio at these points.
-        g_x = alpha_density_ratio(x)
+        g_x = alpha_normalize(alpha_density_ratio(x))
 
         # Compute the alpha-relative KL-divergence.
         n = x.shape[0]
-        divergence = log(g_x).sum(axis=0) / n
+        divergence = log(g_x).sum(axis=0) / n if g_x.all() else '[not calculated]'
         return divergence
 
     alpha_PE = alpha_PE_divergence(x, y)
@@ -128,7 +144,7 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
 
     kernel_info = KernelInfo(kernel_type="Gaussian", kernel_num=kernel_num, sigma=sigma, centers=centers)
     result = DensityRatio(method="RuLSIF", alpha=alpha, theta=theta, lambda_=lambda_, alpha_PE=alpha_PE, alpha_KL=alpha_KL,
-                          kernel_info=kernel_info, compute_density_ratio=alpha_density_ratio)
+                          kernel_info=kernel_info, compute_density_ratio=alpha_density_ratio, alpha_normalize=alpha_normalize)
 
     if verbose:
         print("RuLSIF completed.")
