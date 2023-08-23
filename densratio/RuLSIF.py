@@ -10,7 +10,7 @@ References:
         Journal of Machine Learning Research 10 (2009) 1391-1445.
 """
 
-from numpy import array, asarray, asmatrix, diag, diagflat, empty, exp, inf, log, matrix, multiply, ones, power, sum
+from numpy import array, asarray, diag, diagflat, empty, exp, inf, log, multiply, ones, power, sum
 from numpy.random import randint
 from numpy.linalg import solve
 from warnings import warn
@@ -26,8 +26,8 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
     p_alpha(x) = alpha * p(x) + (1 - alpha) * q(x)
 
     Arguments:
-        x (numpy.matrix): Sample from p(x).
-        y (numpy.matrix): Sample from q(x).
+        x (numpy.ndarray): Sample from p(x).
+        y (numpy.ndarray): Sample from q(x).
         alpha (float): Mixture parameter.
         sigma_range (list<float>): Search range of Gaussian kernel bandwidth.
         lambda_range (list<float>): Search range of regularization parameter.
@@ -191,12 +191,8 @@ def _compute_kernel_Gaussian(x_list, y_row, neg_gamma, res) -> None:
 
 def _target_numpy_wrapper(x_list, y_list, neg_gamma):
     res = empty((y_list.shape[0], x_list.shape[0]), np_float)
-    if isinstance(x_list, matrix) or isinstance(y_list, matrix):
-        res = asmatrix(res)
-
     for j, y_row in enumerate(y_list):
-        # `.T` aligns shapes for matrices, does nothing for 1D ndarray.
-        _compute_kernel_Gaussian(x_list, y_row, neg_gamma, res[j].T)
+        _compute_kernel_Gaussian(x_list, y_row, neg_gamma, res[j])
 
     return res
 
@@ -208,7 +204,7 @@ if guvectorize_compute:
 _compute_function = _compute_functions['cpu' if 'cpu' in _compute_functions else 'numpy']
 
 
-# Returns a 2D numpy matrix of kernel evaluated at the gridpoints with coordinates from x_list and y_list.
+# Returns a 2D numpy ndarray of kernel evaluated at the gridpoints with coordinates from x_list and y_list.
 def compute_kernel_Gaussian(x_list, y_list, sigma):
     return _compute_function(x_list, y_list, -.5 * sigma ** -2).T
 
