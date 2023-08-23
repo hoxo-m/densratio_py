@@ -1,6 +1,6 @@
 import unittest
 
-from numpy import array, matrix
+from numpy import array
 from numpy.testing import assert_array_equal
 from pandas import DataFrame
 from .context import helpers
