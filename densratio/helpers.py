@@ -1,4 +1,4 @@
-from numpy import array, matrix, ndarray, result_type
+from numpy import array, ndarray, result_type
 
 
 np_float = result_type(float)
@@ -30,6 +30,6 @@ def to_ndarray(x):
     elif str(type(x)) == "<class 'pandas.core.frame.DataFrame'>":
         return x.values
     elif not x:
-        raise ValueError("Cannot transform to numpy.matrix.")
+        raise ValueError("Cannot transform to numpy.ndarray.")
     else:
         return to_ndarray(array(x))
