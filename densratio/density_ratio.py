@@ -4,7 +4,7 @@ from re import sub
 
 class DensityRatio:
     """Density Ratio."""
-    def __init__(self, method, alpha, theta, lambda_, alpha_PE, alpha_KL, kernel_info, compute_density_ratio):
+    def __init__(self, method, alpha, theta, lambda_, alpha_PE, alpha_KL, kernel_info, compute_density_ratio, alpha_normalize):
         self.method = method
         self.alpha = alpha
         self.theta = theta
@@ -13,6 +13,7 @@ class DensityRatio:
         self.alpha_KL = alpha_KL
         self.kernel_info = kernel_info
         self.compute_density_ratio = compute_density_ratio
+        self.alpha_normalize = alpha_normalize
 
     def __str__(self):
         return """
