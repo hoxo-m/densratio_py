@@ -45,17 +45,23 @@ def alpha_normalize(values: ndarray, alpha: float) -> ndarray:
 
     Arguments:
         values (numpy.array): A vector to normalize.
-        alpha (float): The normalization term.
+        alpha (float): The nonnegative normalization term.
 
     Returns:
         Normalized numpy.array object that preserves the order and the number of unique input argument values.
     """
-    if not alpha:
+    values = np.asarray(values)
+    if values.ndim != 1:
+        raise ValueError('\'values\' must a 1d vector.')
+
+    if alpha <= 0.:
+        if alpha < 0.:
+            warn('\'alpha\' is negative, normalization aborted.', RuntimeWarning)
+
         return values
 
     a = 1. - alpha
-    last_value = 1.
-    inserted = last_value
+    inserted = last_value = 1.
     outcome = np.empty(values.shape, dtype=values.dtype)
 
     values_argsort = np.argsort(values)
@@ -67,19 +73,17 @@ def alpha_normalize(values: ndarray, alpha: float) -> ndarray:
 
         if value < last_value:
             new_value = inserted - a * (last_value - value)
-            inserted = np.nextafter(inserted, 0) if new_value == inserted else new_value
+            inserted = np.nextafter(inserted, 0.) if new_value == inserted else new_value
             last_value = value
         else:
             assert value == last_value
 
         outcome[i] = inserted
 
-    if inserted < alpha:
+    if inserted <= 0.:
+        warn(f'Normalized vector contains at least one nonpositive [min={inserted}] value.', RuntimeWarning)
+    elif inserted < alpha:
         warn(f'Normalized vector contains at least one value [min={inserted}] less than alpha [{alpha}].',
              RuntimeWarning)
-    if not outcome.all():
-        warn('Normalized vector contains some zero values.', RuntimeWarning)
 
-    assert np.unique(values).size == np.unique(outcome).size
-    assert (values_argsort == np.argsort(outcome)).all()
     return outcome
