@@ -132,7 +132,7 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
 
         # Compute the alpha-relative KL-divergence.
         n = x.shape[0]
-        divergence = log(g_x).sum(axis=0) / n if g_x.all() else '[not calculated]'
+        divergence = log(g_x).sum(axis=0) / n if (g_x > 0.).all() else '[not calculated]'
         return divergence
 
     alpha_PE = alpha_PE_divergence(x, y)
