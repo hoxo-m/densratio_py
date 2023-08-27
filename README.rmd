@@ -251,7 +251,26 @@ plt.title("Estimated Alpha-Relative Density Ratio")
 plt.show()
 ```
 
-## 5. References
+## 5. `DensityRatio.alpha_normalize` function
+This is a supplementary function, that by applying the following linear transformation changes the lower `0` bound (infimum) of its `values` argument in the range of `[0, 1]` to `[alpha, 1]` :
+```math
+x' = (1 - alpha) * x + alpha =  x + alpha * (1 - x)
+```
+The function returns an array whose values are elements of the `[alpha, alpha^-1]` bounded set; the upper `alpha^-1` bound (supremum) is due to properties of the alpha-relative density ratio estimator. As long as the outcome is comprised of positive values only, when the `densratio_obj.alpha_normalize` function is applied to the `densratio_obj.compute_density_ratio` result, it renders the density ratio estimation eligible to be further processed on the logarithmic scale.
+
+### 5.1. Implementation specifics
+To preserve vital estimator properties, there are 2 invariants always met by the function results:
+1. The number of unique values must not changed.
+2. The order of output values remains the same as in the input argument (as determined by [`numpy.argsort`](https://numpy.org/doc/stable/reference/generated/numpy.argsort.html)).
+
+Due to floating‑point arithmetic, if two consecutive input numbers that are not equal are to be transformed to the same outcome, in order to satisfy the constraints in the list above and yield different values as well, the [`numpy.nextafter`](https://numpy.org/doc/stable/reference/generated/numpy.nextafter.html) is employed in the direction of `0`.
+By virtue of this implementation approach, in extreme cases there is a possibility of output values that:
+- are less than `alpha`, or
+- are nonpositive.
+
+Should it happen, a relevant warning is issued.
+
+## 6. References
 
 [1] Hido, S., Tsuboi, Y., Kashima, H., Sugiyama, M., & Kanamori, T.
 **Statistical outlier detection using direct density ratio estimation.**
@@ -268,7 +287,7 @@ Cambridge University Press 2012.
 **Change-Point Detection in Time-Series Data by Relative Density-Ratio Estimation**
 Neural Networks, 2013.
 
-## 6. Related Work
+## 7. Related Work
 
 - densratio for R https://github.com/hoxo-m/densratio
 - pykliep https://github.com/srome/pykliep
