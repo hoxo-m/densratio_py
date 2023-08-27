@@ -1,4 +1,7 @@
+import numpy as np
+
 from numpy import array, matrix, ndarray, result_type
+from warnings import warn
 
 
 np_float = result_type(float)
@@ -33,3 +36,54 @@ def to_ndarray(x):
         raise ValueError("Cannot transform to numpy.matrix.")
     else:
         return to_ndarray(array(x))
+
+
+def alpha_normalize(values: ndarray, alpha: float) -> ndarray:
+    """
+    Normalizes values less than 1 so the minimum value to replace 0 is symmetrical to alpha^-1
+    with respect to the natural logarithm.
+
+    Arguments:
+        values (numpy.array): A vector to normalize.
+        alpha (float): The nonnegative normalization term.
+
+    Returns:
+        Normalized numpy.array object that preserves the order and the number of unique input argument values.
+    """
+    values = np.asarray(values)
+    if values.ndim != 1:
+        raise ValueError('\'values\' must a 1d vector.')
+
+    if alpha <= 0.:
+        if alpha < 0.:
+            warn('\'alpha\' is negative, normalization aborted.', RuntimeWarning)
+
+        return values
+
+    a = 1. - alpha
+    inserted = last_value = 1.
+    outcome = np.empty(values.shape, dtype=values.dtype)
+
+    values_argsort = np.argsort(values)
+    for i in np.flip(values_argsort):
+        value = values[i]
+        if value >= 1.:
+            outcome[i] = value
+            continue
+
+        if value < last_value:
+            new_value = inserted - a * (last_value - value)
+            inserted = np.nextafter(inserted, 0.) if new_value == inserted else new_value
+            last_value = value
+        else:
+            assert value == last_value
+
+        outcome[i] = inserted
+
+    if inserted <= 0.:
+        warn(f'Normalized vector contains at least one nonpositive [min={inserted}] value.', RuntimeWarning)
+    elif inserted < alpha:
+        warn(f'Normalized vector contains at least one value [min={inserted}] less than alpha [{alpha}].',
+             RuntimeWarning)
+
+    return outcome
