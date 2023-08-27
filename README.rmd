@@ -196,6 +196,17 @@ print(result)
 - **Kernel weights(theta)** are theta parameters in the linear kernel model. You can find these values in `result.theta`.
 - **The function to estimate the alpha-relative density ratio** is named `compute_density_ratio()`.
 
+### 3.4. Setting Gaussian kernel calculation engine
+
+When working out Gaussian kernels, linear algebra calculations can be done either with `numpy` or `numba` packages. The `densratio.set_compute_kernel_target` is a function that accepts a single `str` argument to globally `target` a specified engine:
+- `numpy` - [**numpy** broadcasting](https://numpy.org/doc/stable/user/basics.broadcasting.html#module-numpy.doc.broadcasting) optimized. It must be noted the underlying BLAS library (e.g. Intel's MKL) can take advantage of [multi threading model](https://software.intel.com/content/www/us/en/develop/documentation/mkl-linux-developer-guide/top/managing-performance-and-memory/improving-performance-with-threading/using-additional-threading-control.html).
+- `cpu` - [**numba** generalized universal function single thread](https://numba.pydata.org/numba-doc/latest/user/vectorize.html#the-guvectorize-decorator) optimized.
+- `parallel` - [**numba** generalized universal function multi thread](https://numba.pydata.org/numba-doc/latest/reference/jit-compilation.html#numba.guvectorize) optimized. Please be advised all [threading layer specifics](https://numba.pydata.org/numba-doc/latest/user/threading-layer.html) apply.
+
+`densration` defaults to `cpu` when `numba` is available (to take heed of multi threading technicalities), or `numpy` otherwise.
+
+Although `numba` is not a requirement of `densratio_py`, its version ≥ `0.45.1` is necessary to set the calculation engine to `cpu` or `parallel`.
+
 ## 4. Multi Dimensional Data Samples
 
 So far, we have deal with one-dimensional data samples `x` and `y`.
