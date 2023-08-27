@@ -38,8 +38,7 @@ def to_ndarray(x):
 
 
 def semi_stratified_sample(data: ndarray, size: int) -> ndarray:
-    ndims = data.ndim
-    if ndims > 2:
+    if data.ndim > 2:
         raise ValueError('Only single and 2d arrays are supported.')
     if not size:
         return np.empty(0)
@@ -54,7 +53,7 @@ def semi_stratified_sample(data: ndarray, size: int) -> ndarray:
     if size > data_length:
         raise ValueError('Sample size cannot exceed the shape of input data.')
 
-    dims = data.shape[1] if 2 == ndims else 1
+    dims = data.shape[1]
     indexed = np.column_stack((data, result))
     result = np.empty(0, dtype=indexed.dtype)
 
