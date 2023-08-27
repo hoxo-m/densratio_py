@@ -11,11 +11,10 @@ References:
 """
 
 from numpy import array, asarray, diag, diagflat, empty, exp, inf, log, multiply, ones, power, sum
-from numpy.random import randint
 from numpy.linalg import solve
 from warnings import warn
 from .density_ratio import DensityRatio, KernelInfo
-from .helpers import guvectorize_compute, np_float, to_ndarray
+from .helpers import guvectorize_compute, np_float, semi_stratified_sample, to_ndarray
 from .helpers import alpha_normalize as static_alpha_normalize
 
 
@@ -47,7 +46,7 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
     kernel_num = min(kernel_num, nx)
 
     # Randomly take a subset of x, to identify centers for the kernels.
-    centers = x[randint(nx, size=kernel_num)]
+    centers = x[semi_stratified_sample(x, size=kernel_num)]
 
     if verbose:
         print("RuLSIF starting...")
