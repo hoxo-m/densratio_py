@@ -45,8 +45,7 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
     kernel_num = min(kernel_num, nx)
 
     # Randomly take a subset of x, to identify centers for the kernels.
-    x_array = (ravel if 1 == x.shape[1] else asarray)(x)
-    centers = x[semi_stratified_sample(x_array, kernel_num)]
+    centers = x[semi_stratified_sample(ravel(x) if 1 == x.shape[1] else x, size=kernel_num)]
 
     if verbose:
         print("RuLSIF starting...")

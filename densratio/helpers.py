@@ -37,28 +37,28 @@ def to_ndarray(x):
         return to_ndarray(array(x))
 
 
-def semi_stratified_sample(data: ndarray, samples: int) -> ndarray:
+def semi_stratified_sample(data: ndarray, size: int) -> ndarray:
     ndims = data.ndim
     if ndims > 2:
         raise ValueError('Only single and 2d arrays are supported.')
-    if not samples:
+    if not size:
         return np.empty(0)
 
     data_length = data.shape[0]
     result = np.arange(data_length, dtype=int)
-    if samples == data_length:
+    if size == data_length:
         np.random.shuffle(result)
         return result
-    if samples < 0:
-        raise ValueError('Number of samples must be a non-negative integer number.')
-    if samples > data_length:
-        raise ValueError('Number of samples cannot exceed the shape of input data.')
+    if size < 0:
+        raise ValueError('Sample size must be a non-negative integer number.')
+    if size > data_length:
+        raise ValueError('Sample size cannot exceed the shape of input data.')
 
     dims = data.shape[1] if 2 == ndims else 1
     indexed = np.column_stack((data, result))
     result = np.empty(0, dtype=indexed.dtype)
 
-    samples_no = samples // dims
+    samples_no = size // dims
     if samples_no:
         percentiles = np.linspace(0., 100., num=samples_no, endpoint=False)[1:]
 
@@ -88,6 +88,6 @@ def semi_stratified_sample(data: ndarray, samples: int) -> ndarray:
 
     result = np.append(
         result,
-        np.random.choice(indexed[..., dims], size=samples-result.size, replace=False)).astype(int)
+        np.random.choice(indexed[..., dims], size=size - result.size, replace=False)).astype(int)
     np.random.shuffle(result)
     return result
