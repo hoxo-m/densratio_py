@@ -10,12 +10,12 @@ References:
         Journal of Machine Learning Research 10 (2009) 1391-1445.
 """
 
-from numpy import array, asarray, asmatrix, diag, diagflat, empty, exp, inf, log, matrix, multiply, ones, power, sum
-from numpy.random import randint
+from numpy import array, asarray, diag, diagflat, empty, exp, inf, log, multiply, ones, power, sum
 from numpy.linalg import solve
 from warnings import warn
 from .density_ratio import DensityRatio, KernelInfo
-from .helpers import guvectorize_compute, np_float, to_ndarray
+from .helpers import guvectorize_compute, np_float, semi_stratified_sample, to_ndarray
+from .helpers import alpha_normalize as static_alpha_normalize
 
 
 def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True):
@@ -26,8 +26,8 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
     p_alpha(x) = alpha * p(x) + (1 - alpha) * q(x)
 
     Arguments:
-        x (numpy.matrix): Sample from p(x).
-        y (numpy.matrix): Sample from q(x).
+        x (numpy.ndarray): Sample from p(x).
+        y (numpy.ndarray): Sample from q(x).
         alpha (float): Mixture parameter.
         sigma_range (list<float>): Search range of Gaussian kernel bandwidth.
         lambda_range (list<float>): Search range of regularization parameter.
@@ -46,7 +46,7 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
     kernel_num = min(kernel_num, nx)
 
     # Randomly take a subset of x, to identify centers for the kernels.
-    centers = x[randint(nx, size=kernel_num)]
+    centers = x[semi_stratified_sample(x, size=kernel_num)]
 
     if verbose:
         print("RuLSIF starting...")
@@ -87,6 +87,21 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
 
         return alpha_density_ratio
 
+    def alpha_normalize(values: array) -> array:
+        """
+        Normalizes values less than 1 so the minimum value to replace 0 is symmetrical to alpha^-1
+        with respect to the natural logarithm.
+
+        Arguments:
+            values (numpy.array): A vector to normalize.
+
+        Returns:
+            Normalized numpy.array object that preserves the order and the number of unique input argument values.
+        """
+
+        return static_alpha_normalize(values, alpha)
+
+
     # Compute the approximate alpha-relative PE-divergence, given samples x and y from the respective distributions.
     def alpha_PE_divergence(x, y):
         # This is Y, in Reference 1.
@@ -112,11 +127,11 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
         x = to_ndarray(x)
 
         # Obtain alpha-relative density ratio at these points.
-        g_x = alpha_density_ratio(x)
+        g_x = alpha_normalize(alpha_density_ratio(x))
 
         # Compute the alpha-relative KL-divergence.
         n = x.shape[0]
-        divergence = log(g_x).sum(axis=0) / n
+        divergence = log(g_x).sum(axis=0) / n if (g_x > 0.).all() else '[not calculated]'
         return divergence
 
     alpha_PE = alpha_PE_divergence(x, y)
@@ -124,11 +139,12 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
 
     if verbose:
         print("Approximate alpha-relative PE-divergence = {:03.2f}".format(alpha_PE))
-        print("Approximate alpha-relative KL-divergence = {:03.2f}".format(alpha_KL))
+        alpha_KL_format = '{}' if isinstance(alpha_KL, str) else '{:03.2f}'
+        print("Approximate alpha-relative KL-divergence =", alpha_KL_format.format(alpha_KL))
 
     kernel_info = KernelInfo(kernel_type="Gaussian", kernel_num=kernel_num, sigma=sigma, centers=centers)
     result = DensityRatio(method="RuLSIF", alpha=alpha, theta=theta, lambda_=lambda_, alpha_PE=alpha_PE, alpha_KL=alpha_KL,
-                          kernel_info=kernel_info, compute_density_ratio=alpha_density_ratio)
+                          kernel_info=kernel_info, compute_density_ratio=alpha_density_ratio, alpha_normalize=alpha_normalize)
 
     if verbose:
         print("RuLSIF completed.")
@@ -191,12 +207,8 @@ def _compute_kernel_Gaussian(x_list, y_row, neg_gamma, res) -> None:
 
 def _target_numpy_wrapper(x_list, y_list, neg_gamma):
     res = empty((y_list.shape[0], x_list.shape[0]), np_float)
-    if isinstance(x_list, matrix) or isinstance(y_list, matrix):
-        res = asmatrix(res)
-
     for j, y_row in enumerate(y_list):
-        # `.T` aligns shapes for matrices, does nothing for 1D ndarray.
-        _compute_kernel_Gaussian(x_list, y_row, neg_gamma, res[j].T)
+        _compute_kernel_Gaussian(x_list, y_row, neg_gamma, res[j])
 
     return res
 
@@ -208,7 +220,7 @@ if guvectorize_compute:
 _compute_function = _compute_functions['cpu' if 'cpu' in _compute_functions else 'numpy']
 
 
-# Returns a 2D numpy matrix of kernel evaluated at the gridpoints with coordinates from x_list and y_list.
+# Returns a 2D numpy ndarray of kernel evaluated at the gridpoints with coordinates from x_list and y_list.
 def compute_kernel_Gaussian(x_list, y_list, sigma):
     return _compute_function(x_list, y_list, -.5 * sigma ** -2).T
 
