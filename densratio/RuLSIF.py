@@ -11,7 +11,7 @@ References:
 """
 
 from numpy import array, asarray, asmatrix, diag, diagflat, empty, exp, inf, log, matrix, multiply, ones, power, sum
-from numpy.random import randint
+from numpy.random import choice
 from numpy.linalg import solve
 from warnings import warn
 from .density_ratio import DensityRatio, KernelInfo
@@ -46,7 +46,7 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
     kernel_num = min(kernel_num, nx)
 
     # Randomly take a subset of x, to identify centers for the kernels.
-    centers = x[randint(nx, size=kernel_num)]
+    centers = x[choice(nx, size=kernel_num, replace=False)]
 
     if verbose:
         print("RuLSIF starting...")
