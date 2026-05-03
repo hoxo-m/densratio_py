@@ -8,8 +8,8 @@ Mierzejewski (@mierzejk)
 
 [![Build
 Status](https://travis-ci.org/hoxo-m/densratio_py.svg?branch=master)](https://travis-ci.org/hoxo-m/densratio_py)
-[![PyPI](https://img.shields.io/pypi/v/densratio.svg)](https://pypi.python.org/pypi/densratio)
-[![PyPI](https://img.shields.io/pypi/dm/densratio.svg)](https://pypi.python.org/pypi/densratio)
+[![PyPI](https://img.shields.io/pypi/v/densratio.svg)](https://pypi.org/project/densratio/)
+[![PyPI](https://img.shields.io/pypi/dm/densratio.svg)](https://pypi.org/project/densratio/)
 [![Coverage
 Status](https://coveralls.io/repos/github/hoxo-m/densratio_py/badge.svg?branch=master)](https://coveralls.io/github/hoxo-m/densratio_py?branch=master)
 <!-- badges: end -->
@@ -24,11 +24,13 @@ d-dimensional real numbers.
 The estimated density ratio function `w(x)` can be used in many
 applications such as the inlier-based outlier detection \[1\] and
 covariate shift adaptation \[2\]. Other useful applications for density
-ratio estimation were summarized by Sugiyama et al. (2012) in \[3\].
+ratio estimation were summarized by Sugiyama et al. (2012) in \[3\].
 
-The package **densratio** provides a function `densratio()` that returns
-an object with a method to estimate density ratio as
-`compute_density_ratio()`.
+The package **densratio** provides `densratio()` and method-specific
+wrappers `uLSIF()`, `RuLSIF()`, and `KLIEP()`. Each estimator returns an
+object with `compute_density_ratio()` for evaluating the learned density
+ratio on new samples. The default method is `uLSIF`, matching the R
+package API.
 
 Further, the alpha-relative density ratio
 `p(x)/(alpha * p(x) + (1 - alpha) * q(x))` (where alpha is in the range
@@ -49,7 +51,7 @@ np.random.seed(1)
 x = norm.rvs(size=500, loc=0, scale=1./8)
 y = norm.rvs(size=500, loc=0, scale=1./2)
 alpha = 0.1
-densratio_obj = densratio(x, y, alpha=alpha)
+densratio_obj = densratio(x, y, method="RuLSIF", alpha=alpha)
 print(densratio_obj)
 ```
 
@@ -153,35 +155,56 @@ plt.show()
 
 ![](README_files/figure-gfm/plot-estimated-density-ratio-3.png)<!-- -->
 
-### 3.2. The Method
+### 3.2. Methods
 
-The package estimates density ratio by the RuLSIF method.
+The package estimates density ratios with Gaussian-kernel direct density
+ratio estimators. Use the `method` argument of `densratio()` or call the
+method-specific wrappers directly:
 
-**RuLSIF** (Relative unconstrained Least-Squares Importance Fitting)
-estimates the alpha-relative density ratio by minimizing the squared
-loss between the true and estimated alpha-relative ratios. You can find
-more information in Hido et al. (2011) \[1\] and Liu et al (2013) \[4\].
+-   `uLSIF(x, y, ...)` estimates the ordinary density ratio
+    `p(x) / q(x)` by unconstrained Least-Squares Importance Fitting.
+    This is the default for `densratio(x, y)`.
+-   `RuLSIF(x, y, alpha=0.1, ...)` estimates the alpha-relative density
+    ratio `p(x) / (alpha * p(x) + (1 - alpha) * q(x))`. It also reports
+    alpha-relative PE-divergence and KL-divergence.
+-   `KLIEP(x, y, fold=5, ...)` estimates the ordinary density ratio by
+    Kullback-Leibler Importance Estimation Procedure. It uses
+    cross-validation over `sigma` when a search range is provided.
 
-The method assumes that the alpha-relative density ratio is represented
-by a linear kernel model:
+For example:
+
+``` python
+ordinary = densratio(x, y)
+relative = densratio(x, y, method="RuLSIF", alpha=0.1)
+kliep = densratio(x, y, method="KLIEP", sigma=[0.1, 0.3, 1.0], fold=5)
+```
+
+All methods represent the density ratio with a linear Gaussian RBF
+kernel model:
 
 `w(x) = theta1 * K(x, c1) + theta2 * K(x, c2) + ... + thetab * K(x, cb)`
 where `K(x, c) = exp(- ||x - c||^2 / (2 * sigma ^ 2))` is the Gaussian
 RBF kernel.
 
-`densratio()` performs the following: - Decides kernel parameter `sigma`
-by cross-validation. - Optimizes for kernel weights `theta`. - Computes
-the alpha-relative PE-divergence and KL-divergence from the learned
-alpha-relative ratio.
+`densratio()` performs the following:
+
+-   Decides kernel parameter `sigma` by cross-validation.
+-   Optimizes for kernel weights `theta`.
+-   For RuLSIF, computes the alpha-relative PE-divergence and
+    KL-divergence from the learned alpha-relative ratio.
+
+Kernel centers are selected at random from `x`, the numerator sample.
+Set `numpy.random.seed(...)` before fitting when reproducible centers are
+needed.
 
 As the result, you can obtain `compute_density_ratio()`, which will
-compute the alpha-relative density ratio at the passed coordinates.
+compute the estimated density ratio at the passed coordinates.
 
 ### 3.3. Result and Parameter Settings
 
 `densratio()` outputs the result like as follows:
 
-    #> Method: RuLSIF
+    #> Method: uLSIF
     #> 
     #> Alpha: 0
     #> 
@@ -204,7 +227,7 @@ compute the alpha-relative density ratio at the passed coordinates.
     #>   compute_density_ratio(x)
     #> 
 
--   **Method** is fixed as RuLSIF.
+-   **Method** is `uLSIF`, `RuLSIF`, or `KLIEP`.
 -   **Kernel type** is fixed as Gaussian RBF.
 -   **Number of kernels** is the number of kernels in the linear model.
     You can change by setting `kernel_num` parameter. In default,
@@ -219,9 +242,24 @@ compute the alpha-relative density ratio at the passed coordinates.
     numerator distribution `p(x)`. You can find the whole values in
     `result.kernel_info.centers`.
 -   **Kernel weights(theta)** are theta parameters in the linear kernel
-    model. You can find these values in `result.theta`.
--   **The function to estimate the alpha-relative density ratio** is
-    named `compute_density_ratio()`.
+    model. You can find these values in `result.theta`, or
+    `result.kernel_weights` for R-style naming.
+-   **Regularization parameter(lambda)** is used by `uLSIF` and
+    `RuLSIF`. It is not used by `KLIEP`.
+-   **Fold** is used by `KLIEP` cross-validation.
+-   **The function to estimate the density ratio** is named
+    `compute_density_ratio()`.
+
+### 3.4. Setting Gaussian kernel calculation engine
+
+When working out Gaussian kernels, linear algebra calculations can be done either with `numpy` or `numba` packages. The `densratio.set_compute_kernel_target` function accepts a single `str` argument to globally select a specified engine:
+- `numpy` - [**numpy** broadcasting](https://numpy.org/doc/stable/user/basics.broadcasting.html#module-numpy.doc.broadcasting) optimized. It must be noted the underlying BLAS library (e.g. Intel's MKL) can take advantage of [multi threading model](https://software.intel.com/content/www/us/en/develop/documentation/mkl-linux-developer-guide/top/managing-performance-and-memory/improving-performance-with-threading/using-additional-threading-control.html).
+- `cpu` - [**numba** generalized universal function single thread](https://numba.pydata.org/numba-doc/latest/user/vectorize.html#the-guvectorize-decorator) optimized.
+- `parallel` - [**numba** generalized universal function multi thread](https://numba.pydata.org/numba-doc/latest/reference/jit-compilation.html#numba.guvectorize) optimized. Please be advised all [threading layer specifics](https://numba.pydata.org/numba-doc/latest/user/threading-layer.html) apply.
+
+`densratio` defaults to `cpu` when `numba` is available, or `numpy` otherwise.
+
+Although `numba` is not a requirement of `densratio_py`, version `0.45.1` or later is necessary to set the calculation engine to `cpu` or `parallel`.
 
 ## 4. Multi Dimensional Data Samples
 
@@ -240,7 +278,7 @@ np.random.seed(1)
 x = multivariate_normal.rvs(size=3000, mean=[1, 1], cov=[[1. / 8, 0], [0, 1. / 8]])
 y = multivariate_normal.rvs(size=3000, mean=[1, 1], cov=[[1. / 2, 0], [0, 1. / 2]])
 alpha = 0
-densratio_obj = densratio(x, y, alpha=alpha, sigma_range=[0.1, 0.3, 0.5, 0.7, 1], lambda_range=[0.01, 0.02, 0.03, 0.04, 0.05])
+densratio_obj = densratio(x, y, method="RuLSIF", alpha=alpha, sigma_range=[0.1, 0.3, 0.5, 0.7, 1], lambda_range=[0.01, 0.02, 0.03, 0.04, 0.05])
 print(densratio_obj)
 ```
 
@@ -311,7 +349,7 @@ plt.show()
 **Statistical outlier detection using direct density ratio estimation.**
 Knowledge and Information Systems 2011.
 
-\[2\] Sugiyama, M., Nakajima, S., Kashima, H., von Bünau, P. & Kawanabe,
+\[2\] Sugiyama, M., Nakajima, S., Kashima, H., von Bunau, P. & Kawanabe,
 M. **Direct importance estimation with model selection and its
 application to covariate shift adaptation.** NIPS 2007.
 
