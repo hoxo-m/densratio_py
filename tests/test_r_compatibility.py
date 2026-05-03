@@ -181,7 +181,6 @@ class RCompatibilityTestSuite(unittest.TestCase):
         self.assert_kernel_weights(result)
         self.assert_density_ratio_for_new_input(result)
 
-    @unittest.expectedFailure
     def test_kliep_fixed_parameter_contract(self):
         package = importlib.import_module("densratio")
 
@@ -190,6 +189,24 @@ class RCompatibilityTestSuite(unittest.TestCase):
 
         self.assertEqual(result.method, "KLIEP")
         self.assertEqual(getattr(result, "fold", None), 5)
+        self.assert_kernel_info(result)
+        self.assert_kernel_weights(result)
+        self.assert_density_ratio_for_new_input(result)
+
+    def test_densratio_accepts_method_argument_for_kliep(self):
+        np.random.seed(314)
+        result = densratio(
+            self.x,
+            self.y,
+            method="KLIEP",
+            sigma=[0.1],
+            kernel_num=20,
+            fold=5,
+            verbose=False,
+        )
+
+        self.assertEqual(result.method, "KLIEP")
+        self.assertEqual(result.fold, 5)
         self.assert_kernel_info(result)
         self.assert_kernel_weights(result)
         self.assert_density_ratio_for_new_input(result)

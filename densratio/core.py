@@ -6,6 +6,7 @@ Estimate Density Ratio p(x)/q(y)
 """
 
 from numpy import array, linspace
+from .KLIEP import KLIEP as _KLIEP
 from .RuLSIF import RuLSIF as _RuLSIF
 from .helpers import is_numeric, to_ndarray
 
@@ -63,6 +64,9 @@ def densratio(x, y, method="uLSIF", sigma="auto", lambda_="auto", alpha=0.1,
         return RuLSIF(x, y, sigma=sigma, lambda_=lambda_, alpha=alpha, kernel_num=kernel_num, verbose=verbose,
                       sigma_range=sigma_range, lambda_range=lambda_range)
 
+    if sigma_range is not None:
+        sigma = sigma_range
+
     return KLIEP(x, y, sigma=sigma, kernel_num=kernel_num, fold=fold, verbose=verbose)
 
 
@@ -93,7 +97,13 @@ def RuLSIF(x, y, sigma="auto", lambda_="auto", alpha=0.1, kernel_num=100, verbos
 
 
 def KLIEP(x, y, sigma="auto", kernel_num=100, fold=5, verbose=True):
-    raise NotImplementedError("KLIEP is not implemented yet.")
+    x = to_ndarray(x)
+    y = to_ndarray(y)
+
+    if x.shape[1] != y.shape[1]:
+        raise ValueError("x and y must be same dimensions.")
+
+    return _KLIEP(x, y, sigma=sigma, kernel_num=kernel_num, fold=fold, verbose=verbose)
 
 
 def _run_RuLSIF(x, y, alpha, sigma, lambda_, kernel_num, verbose, sigma_range=None, lambda_range=None):
