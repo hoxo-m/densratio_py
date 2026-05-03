@@ -21,13 +21,17 @@ def is_numeric(x):
     return isinstance(x, int) or isinstance(x, float)
 
 
+def is_pandas_dataframe(x):
+    return x.__class__.__name__ == "DataFrame" and x.__class__.__module__.startswith("pandas")
+
+
 def to_ndarray(x):
     if isinstance(x, ndarray):
         if len(x.shape) == 1:
             return x.reshape(-1, 1)
         else:
             return x
-    elif str(type(x)) == "<class 'pandas.core.frame.DataFrame'>":
+    elif is_pandas_dataframe(x):
         return x.values
     elif not x:
         raise ValueError("Cannot transform to numpy.matrix.")
