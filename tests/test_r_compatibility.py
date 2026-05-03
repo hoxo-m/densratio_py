@@ -20,8 +20,9 @@ class RCompatibilityTestSuite(unittest.TestCase):
         return densratio(
             self.x,
             self.y,
-            sigma_range=[0.1],
-            lambda_range=[lambda_],
+            method="RuLSIF",
+            sigma=[0.1],
+            lambda_=[lambda_],
             alpha=alpha,
             kernel_num=20,
             verbose=False,
@@ -114,21 +115,19 @@ class RCompatibilityTestSuite(unittest.TestCase):
         with self.assertRaises(ValueError):
             densratio(self.x, y_2d, verbose=False)
 
-    @unittest.expectedFailure
     def test_r_public_exports_are_available(self):
         package = importlib.import_module("densratio")
 
         for name in ("densratio", "uLSIF", "RuLSIF", "KLIEP"):
             self.assertTrue(hasattr(package, name), name)
 
-    @unittest.expectedFailure
     def test_densratio_accepts_method_argument_for_rulsif(self):
         result = densratio(
             self.x,
             self.y,
             method="RuLSIF",
-            sigma_range=[0.1],
-            lambda_range=[0.1],
+            sigma=[0.1],
+            **{"lambda": [0.1]},
             alpha=0.1,
             kernel_num=20,
             verbose=False,
@@ -138,13 +137,12 @@ class RCompatibilityTestSuite(unittest.TestCase):
         self.assert_kernel_info(result)
         self.assert_kernel_weights(result)
 
-    @unittest.expectedFailure
     def test_densratio_default_method_is_ulsif(self):
         result = densratio(
             self.x,
             self.y,
-            sigma_range=[0.1],
-            lambda_range=[1],
+            sigma=[0.1],
+            lambda_=[1],
             kernel_num=20,
             verbose=False,
         )
@@ -152,6 +150,33 @@ class RCompatibilityTestSuite(unittest.TestCase):
         self.assertEqual(result.method, "uLSIF")
         self.assertEqual(getattr(result, "alpha", None), 0)
         self.assertEqual(getattr(result, "lambda_", getattr(result, "lambda", None)), 1)
+        self.assert_kernel_info(result)
+        self.assert_kernel_weights(result)
+        self.assert_density_ratio_for_new_input(result)
+
+    def test_public_ulsif_wrapper(self):
+        package = importlib.import_module("densratio")
+
+        np.random.seed(314)
+        result = package.uLSIF(self.x, self.y, sigma=[0.1], lambda_=[1], kernel_num=20, verbose=False)
+
+        self.assertEqual(result.method, "uLSIF")
+        self.assertEqual(result.alpha, 0)
+        self.assertEqual(result.lambda_, 1)
+        self.assert_kernel_info(result)
+        self.assert_kernel_weights(result)
+        self.assert_density_ratio_for_new_input(result)
+
+    def test_public_rulsif_wrapper(self):
+        package = importlib.import_module("densratio")
+
+        np.random.seed(314)
+        result = package.RuLSIF(self.x, self.y, sigma=[0.1], lambda_=[0.1], alpha=0.1,
+                               kernel_num=20, verbose=False)
+
+        self.assertEqual(result.method, "RuLSIF")
+        self.assertEqual(result.alpha, 0.1)
+        self.assertEqual(result.lambda_, 0.1)
         self.assert_kernel_info(result)
         self.assert_kernel_weights(result)
         self.assert_density_ratio_for_new_input(result)

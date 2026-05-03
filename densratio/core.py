@@ -5,23 +5,27 @@ densratio.core
 Estimate Density Ratio p(x)/q(y)
 """
 
-from numpy import linspace
-from .RuLSIF import RuLSIF
-from .helpers import to_ndarray
+from numpy import array, linspace
+from .RuLSIF import RuLSIF as _RuLSIF
+from .helpers import is_numeric, to_ndarray
 
 
-def densratio(x, y, alpha=0, sigma_range="auto", lambda_range="auto", kernel_num=100, verbose=True):
-    """ Estimate alpha-mixture Density Ratio p(x)/(alpha*p(x) + (1 - alpha)*q(x))
+_METHODS = ("uLSIF", "RuLSIF", "KLIEP")
+
+
+def densratio(x, y, method="uLSIF", sigma="auto", lambda_="auto", alpha=0.1,
+              kernel_num=100, fold=5, verbose=True, sigma_range=None, lambda_range=None, **kwargs):
+    """ Estimate Density Ratio p(x)/q(y)
 
     Arguments:
         x: sample from p(x).
         y: sample from q(x).
-        alpha: Default 0 - corresponds to ordinary density ratio.
-        sigma_range: search range of Gaussian kernel bandwidth.
-            Default "auto" means 10^-3, 10^-2, ..., 10^9.
-        lambda_range: search range of regularization parameter for uLSIF.
-            Default "auto" means 10^-3, 10^-2, ..., 10^9.
+        method: "uLSIF" (default), "RuLSIF", or "KLIEP".
+        sigma: search range of Gaussian kernel bandwidth.
+        lambda_: search range of regularization parameter for uLSIF and RuLSIF.
+        alpha: relative parameter for RuLSIF. Default 0.1.
         kernel_num: number of kernels. Default 100.
+        fold: number of folds of cross validation for KLIEP. Default 5.
         verbose: indicator to print messages. Default True.
 
     Returns:
@@ -36,30 +40,100 @@ def densratio(x, y, alpha=0, sigma_range="auto", lambda_range="auto", kernel_num
 
       >>> x = norm.rvs(size=200, loc=1, scale=1./8)
       >>> y = norm.rvs(size=200, loc=1, scale=1./2)
-      >>> result = densratio(x, y, alpha=0.7)
+      >>> result = densratio(x, y)
       >>> print(result)
 
       >>> density_ratio = result.compute_density_ratio(y)
       >>> print(density_ratio)
     """
 
+    if kwargs:
+        if "lambda" in kwargs:
+            lambda_ = kwargs.pop("lambda")
+        if kwargs:
+            raise TypeError("Unexpected keyword argument(s): {}.".format(", ".join(kwargs)))
+
+    method = _normalize_method(method)
+
+    if method == "uLSIF":
+        return uLSIF(x, y, sigma=sigma, lambda_=lambda_, kernel_num=kernel_num, verbose=verbose,
+                     sigma_range=sigma_range, lambda_range=lambda_range)
+
+    if method == "RuLSIF":
+        return RuLSIF(x, y, sigma=sigma, lambda_=lambda_, alpha=alpha, kernel_num=kernel_num, verbose=verbose,
+                      sigma_range=sigma_range, lambda_range=lambda_range)
+
+    return KLIEP(x, y, sigma=sigma, kernel_num=kernel_num, fold=fold, verbose=verbose)
+
+
+def uLSIF(x, y, sigma="auto", lambda_="auto", kernel_num=100, verbose=True,
+          sigma_range=None, lambda_range=None, **kwargs):
+    if kwargs:
+        if "lambda" in kwargs:
+            lambda_ = kwargs.pop("lambda")
+        if kwargs:
+            raise TypeError("Unexpected keyword argument(s): {}.".format(", ".join(kwargs)))
+
+    result = _run_RuLSIF(x, y, alpha=0, sigma=sigma, lambda_=lambda_, kernel_num=kernel_num, verbose=verbose,
+                         sigma_range=sigma_range, lambda_range=lambda_range)
+    result.method = "uLSIF"
+    return result
+
+
+def RuLSIF(x, y, sigma="auto", lambda_="auto", alpha=0.1, kernel_num=100, verbose=True,
+           sigma_range=None, lambda_range=None, **kwargs):
+    if kwargs:
+        if "lambda" in kwargs:
+            lambda_ = kwargs.pop("lambda")
+        if kwargs:
+            raise TypeError("Unexpected keyword argument(s): {}.".format(", ".join(kwargs)))
+
+    return _run_RuLSIF(x, y, alpha=alpha, sigma=sigma, lambda_=lambda_, kernel_num=kernel_num, verbose=verbose,
+                       sigma_range=sigma_range, lambda_range=lambda_range)
+
+
+def KLIEP(x, y, sigma="auto", kernel_num=100, fold=5, verbose=True):
+    raise NotImplementedError("KLIEP is not implemented yet.")
+
+
+def _run_RuLSIF(x, y, alpha, sigma, lambda_, kernel_num, verbose, sigma_range=None, lambda_range=None):
     x = to_ndarray(x)
     y = to_ndarray(y)
 
     if x.shape[1] != y.shape[1]:
         raise ValueError("x and y must be same dimensions.")
 
-    if isinstance(sigma_range, str) and sigma_range != "auto":
-        raise TypeError("Invalid value for sigma_range.")
+    if sigma_range is not None:
+        sigma = sigma_range
 
-    if isinstance(lambda_range, str) and lambda_range != "auto":
-        raise TypeError("Invalid value for lambda_range.")
+    if lambda_range is not None:
+        lambda_ = lambda_range
 
-    if sigma_range is None or (isinstance(sigma_range, str) and sigma_range == "auto"):
-        sigma_range = 10 ** linspace(-3, 9, 13)
+    sigma_range = _normalize_search_range(sigma, "sigma")
+    lambda_range = _normalize_search_range(lambda_, "lambda")
 
-    if lambda_range is None or (isinstance(lambda_range, str) and lambda_range == "auto"):
-        lambda_range = 10 ** linspace(-3, 9, 13)
+    return _RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num, verbose)
 
-    result = RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num, verbose)
-    return result
+
+def _normalize_method(method):
+    if isinstance(method, (list, tuple)):
+        method = method[0]
+
+    for candidate in _METHODS:
+        if method == candidate:
+            return candidate
+
+    raise ValueError("method must be one of {}.".format(", ".join(_METHODS)))
+
+
+def _normalize_search_range(value, name):
+    if value is None or (isinstance(value, str) and value == "auto"):
+        return 10 ** linspace(-3, 1, 9)
+
+    if isinstance(value, str):
+        raise TypeError("Invalid value for {}.".format(name))
+
+    if is_numeric(value):
+        return array([value])
+
+    return value
