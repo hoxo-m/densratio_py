@@ -1,4 +1,5 @@
 import importlib
+import pickle
 import unittest
 
 import numpy as np
@@ -70,6 +71,19 @@ class RCompatibilityTestSuite(unittest.TestCase):
         result = self.fit_rulsif()
 
         self.assert_density_ratio_for_new_input(result)
+
+    def test_density_ratio_object_round_trips_through_pickle(self):
+        result = self.fit_rulsif()
+        new_x = np.linspace(0, 2, 11)
+        expected_density_ratio = result.compute_density_ratio(new_x)
+
+        restored = pickle.loads(pickle.dumps(result))
+        actual_density_ratio = restored.compute_density_ratio(new_x)
+
+        self.assertEqual(restored.method, result.method)
+        self.assertEqual(restored.alpha, result.alpha)
+        self.assertEqual(restored.lambda_, result.lambda_)
+        np.testing.assert_allclose(actual_density_ratio, expected_density_ratio)
 
     def test_rulsif_multivariate_new_input_rows(self):
         rng = np.random.RandomState(314)

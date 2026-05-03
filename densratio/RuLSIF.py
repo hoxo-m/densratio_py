@@ -128,7 +128,7 @@ def RuLSIF(x, y, alpha, sigma_range, lambda_range, kernel_num=100, verbose=True)
 
     kernel_info = KernelInfo(kernel_type="Gaussian", kernel_num=kernel_num, sigma=sigma, centers=centers)
     result = DensityRatio(method="RuLSIF", alpha=alpha, theta=theta, lambda_=lambda_, alpha_PE=alpha_PE, alpha_KL=alpha_KL,
-                          kernel_info=kernel_info, compute_density_ratio=alpha_density_ratio)
+                          kernel_info=kernel_info)
 
     if verbose:
         print("RuLSIF completed.")
