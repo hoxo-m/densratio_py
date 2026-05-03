@@ -111,6 +111,8 @@ You can install the package from
 $ pip install densratio
 ```
 
+**densratio** supports Python 3.10 or later.
+
 Also, you can install the package from
 [GitHub](https://github.com/hoxo-m/densratio_py).
 
