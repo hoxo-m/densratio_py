@@ -4,14 +4,17 @@ from re import sub
 
 class DensityRatio:
     """Density Ratio."""
-    def __init__(self, method, alpha, theta, lambda_, alpha_PE, alpha_KL, kernel_info, compute_density_ratio=None):
+    def __init__(self, method, alpha, theta, lambda_, alpha_PE, alpha_KL, kernel_info, compute_density_ratio=None,
+                 fold=None):
         self.method = method
         self.alpha = alpha
         self.theta = theta
+        self.kernel_weights = theta
         self.lambda_ = lambda_
         self.alpha_PE = alpha_PE
         self.alpha_KL = alpha_KL
         self.kernel_info = kernel_info
+        self.fold = fold
 
     def compute_density_ratio(self, x):
         from .RuLSIF import compute_kernel_Gaussian
