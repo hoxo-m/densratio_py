@@ -13,7 +13,6 @@ setup(
     author='Koji Makiyama, Ameya Daigavane, Krzysztof Mierzejewski',
     author_email='hoxo.smile@gmail.com',
     classifiers=[
-        'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: Python :: 3.10',
@@ -27,10 +26,14 @@ setup(
     packages=find_packages(exclude=('tests', 'docs')),
     python_requires='>=3.10',
     install_requires=['numpy'],
+    extras_require={
+        'test': ['matplotlib', 'pandas', 'pytest', 'scipy'],
+        'docs': ['sphinx'],
+        'dev': ['build', 'matplotlib', 'pandas', 'pytest', 'scipy', 'sphinx', 'twine', 'wheel'],
+    },
     project_urls={
         'Bug Reports': 'https://github.com/hoxo-m/densratio_py/issues',
         'Source': 'https://github.com/hoxo-m/densratio_py',
     },
     license="MIT + file LICENSE",
-    test_suite='tests',
 )

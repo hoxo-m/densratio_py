@@ -1,6 +1,2 @@
-pytest
-sphinx
-numpy
-scipy
-pandas
-matplotlib
+# Development environment for tests, docs, and release checks.
+-e .[dev]
