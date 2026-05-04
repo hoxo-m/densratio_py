@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Added a README section listing research papers that used the Python package.
+
 ## [0.4.0] - 2026-05-04
 
 This release refreshes the Python package for renewed PyPI publishing and

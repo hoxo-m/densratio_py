@@ -342,7 +342,30 @@ plt.show()
 
 ![](README_files/figure-gfm/compare-2d-5.png)<!-- -->
 
-## 5. References
+## 5. Used in research
+
+The **densratio** package has been used in several research papers,
+including:
+
+-   Kato, M., Imaizumi, M., & Minami, K. (2023). Unified Perspective on
+    Probability Divergence via the Density-Ratio Likelihood: Bridging
+    KL-Divergence and Integral Probability Metrics. *AISTATS 2023.*
+-   Nagumo, R., & Fujisawa, H. (2024). Density Ratio Estimation with
+    Doubly Strong Robustness. *ICML 2024.*
+-   Endo, H., Ikeda, S., Harada, K., Yamagata, H., Matsubara, T.,
+    Matsuo, K., Kawahara, Y., & Yamashita, O. (2024). Manifold
+    alteration between major depressive disorder and healthy control
+    subjects using dynamic mode decomposition in resting-state fMRI data.
+    *Frontiers in Psychiatry, 2024.*
+-   Wang, M., Huang, W., Gong, M., & Zhang, Z. (2025). Projection Pursuit
+    Density Ratio Estimation. *ICML 2025.*
+
+## 6. Related Work
+
+-   densratio for R <https://github.com/hoxo-m/densratio>
+-   pykliep <https://github.com/srome/pykliep>
+
+## References
 
 \[1\] Hido, S., Tsuboi, Y., Kashima, H., Sugiyama, M., & Kanamori, T.
 **Statistical outlier detection using direct density ratio estimation.**
@@ -358,8 +381,3 @@ in Machine Learning.** Cambridge University Press 2012.
 \[4\] Liu, S., Yamada, M., Collier, N., & Sugiyama, M. **Change-Point
 Detection in Time-Series Data by Relative Density-Ratio Estimation**
 Neural Networks, 2013.
-
-## 6. Related Work
-
--   densratio for R <https://github.com/hoxo-m/densratio>
--   pykliep <https://github.com/srome/pykliep>
