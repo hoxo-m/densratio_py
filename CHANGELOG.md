@@ -2,12 +2,6 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
-
-### Added
-
-- Added a README section listing research papers that used the Python package.
-
 ## [0.4.0] - 2026-05-04
 
 This release refreshes the Python package for renewed PyPI publishing and
@@ -23,6 +17,7 @@ brings the public API closer to the R `densratio` package.
 - Added GitHub Actions CI for Python 3.10 through 3.14.
 - Added package extras for test, docs, and development environments.
 - Added a Trusted Publishing release workflow and release checklist.
+- Added a README section listing research papers that used the Python package.
 
 ### Changed
 
