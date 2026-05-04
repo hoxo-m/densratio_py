@@ -33,6 +33,7 @@ setup(
     },
     project_urls={
         'Bug Reports': 'https://github.com/hoxo-m/densratio_py/issues',
+        'Changelog': 'https://github.com/hoxo-m/densratio_py/blob/main/CHANGELOG.md',
         'Source': 'https://github.com/hoxo-m/densratio_py',
     },
     license="MIT + file LICENSE",
