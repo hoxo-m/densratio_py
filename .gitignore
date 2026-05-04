@@ -14,3 +14,4 @@ README_cache
 .cache
 .pypirc
 __pycache__
+.positai
