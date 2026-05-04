@@ -6,12 +6,9 @@ Mierzejewski (@mierzejk)
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- badges: start -->
 
-[![Build
-Status](https://travis-ci.org/hoxo-m/densratio_py.svg?branch=master)](https://travis-ci.org/hoxo-m/densratio_py)
+[![CI](https://github.com/hoxo-m/densratio_py/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/hoxo-m/densratio_py/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/densratio.svg)](https://pypi.org/project/densratio/)
 [![PyPI](https://img.shields.io/pypi/dm/densratio.svg)](https://pypi.org/project/densratio/)
-[![Coverage
-Status](https://coveralls.io/repos/github/hoxo-m/densratio_py/badge.svg?branch=master)](https://coveralls.io/github/hoxo-m/densratio_py?branch=master)
 <!-- badges: end -->
 
 ## 1. Overview
